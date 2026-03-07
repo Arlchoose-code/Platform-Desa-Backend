@@ -1,0 +1,12 @@
+# Env
+.env
+
+# Build output
+tmp/
+*.exe
+
+# Uploads
+uploads/
+
+# Go
+vendor/
