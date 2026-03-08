@@ -14,7 +14,8 @@ type RefreshTokenRequest struct {
 }
 
 type UpdateProfileRequest struct {
-	Name  string  `json:"name" binding:"required,min=2"`
+	Name  string  `json:"name" binding:"omitempty,min=2"`
+	Email string  `json:"email" binding:"omitempty,email"`
 	Phone *string `json:"phone"`
 }
 

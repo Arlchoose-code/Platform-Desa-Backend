@@ -14,14 +14,12 @@ import (
 func Register(r *gin.Engine) {
 	api := r.Group("/api/v1")
 
-	// Auth (tanpa middleware)
 	auth := api.Group("/admin/auth")
 	{
 		auth.POST("/login", controllers.Login)
 		auth.POST("/refresh", controllers.RefreshToken)
 	}
 
-	// Protected - wajib JWT
 	protected := api.Group("/admin")
 	protected.Use(middlewares.Auth())
 	{
@@ -30,7 +28,6 @@ func Register(r *gin.Engine) {
 		protected.PUT("/auth/me", controllers.UpdateMe)
 		protected.PUT("/auth/me/password", controllers.ChangePassword)
 
-		// Users - hanya superadmin
 		users := protected.Group("/users")
 		users.Use(middlewares.Role("superadmin"))
 		{
@@ -43,6 +40,17 @@ func Register(r *gin.Engine) {
 			users.DELETE("/:id/avatar", admin.DeleteAvatar)
 			users.PUT("/:id/reset-password", admin.ResetPassword)
 			users.DELETE("/:id", admin.DeleteUser)
+		}
+		media := protected.Group("/media")
+		{
+			media.GET("", admin.GetMediaList)
+			media.GET("/:id", admin.GetMedia)
+			media.POST("", admin.UploadMedia)
+			media.POST("/batch", admin.UploadMultipleMedia)
+			media.POST("/youtube", admin.AddYoutubeMedia)
+			media.POST("/drive", admin.AddDriveMedia)
+			media.DELETE("/batch", admin.DeleteMultipleMedia)
+			media.DELETE("/:id", admin.DeleteMedia)
 		}
 	}
 }

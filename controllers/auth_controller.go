@@ -135,9 +135,27 @@ func UpdateMe(c *gin.Context) {
 		return
 	}
 
-	user.Name = req.Name
-	user.Phone = req.Phone
-	database.DB.Save(&user)
+	if req.Name != "" {
+		user.Name = req.Name
+	}
+
+	if req.Email != "" && req.Email != user.Email {
+		var existing models.User
+		if err := database.DB.Where("email = ? AND id != ?", req.Email, userID).First(&existing).Error; err == nil {
+			helpers.BadRequest(c, "Email sudah digunakan", nil)
+			return
+		}
+		user.Email = req.Email
+	}
+
+	if req.Phone != nil {
+		user.Phone = req.Phone
+	}
+
+	if err := database.DB.Save(&user).Error; err != nil {
+		helpers.InternalError(c, "Gagal memperbarui profil")
+		return
+	}
 
 	helpers.OK(c, "Profil berhasil diperbarui", user)
 }

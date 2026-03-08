@@ -9,7 +9,9 @@ import (
 	"strings"
 
 	"github.com/Arlchoose-code/platform-desa-backend/config"
+	"github.com/Arlchoose-code/platform-desa-backend/database"
 	"github.com/Arlchoose-code/platform-desa-backend/helpers"
+	"github.com/Arlchoose-code/platform-desa-backend/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -42,9 +44,22 @@ func Auth() gin.HandlerFunc {
 			return
 		}
 
+		var user models.User
+		if err := database.DB.Select("id, role, is_active").First(&user, claims.UserID).Error; err != nil {
+			helpers.Unauthorized(c, "User tidak ditemukan")
+			c.Abort()
+			return
+		}
+
+		if !user.IsActive {
+			helpers.Unauthorized(c, "Akun tidak aktif")
+			c.Abort()
+			return
+		}
+
 		c.Set("user_id", claims.UserID)
 		c.Set("user_email", claims.Email)
-		c.Set("user_role", claims.Role)
+		c.Set("user_role", user.Role)
 		c.Next()
 	}
 }

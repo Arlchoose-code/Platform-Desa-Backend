@@ -35,12 +35,22 @@ type JWTConfig struct {
 }
 
 type UploadConfig struct {
-	Path          string
-	MaxUploadSize int64 // bytes
+	Path            string
+	MaxImageSize    int64 // bytes
+	MaxVideoSize    int64 // bytes, 0 = bebas
+	MaxDocumentSize int64 // bytes, 0 = bebas
+	ImageMaxWidth   int   // px, resize kalau melebihi
+	ImageMaxHeight  int   // px, resize kalau melebihi
+	ImageQuality    int   // WebP quality 1-100
 }
 
 type CORSConfig struct {
 	AllowedOrigins string
+}
+
+type NextJSConfig struct {
+	URL              string
+	RevalidateSecret string
 }
 
 type Config struct {
@@ -49,6 +59,7 @@ type Config struct {
 	JWT      JWTConfig
 	Upload   UploadConfig
 	CORS     CORSConfig
+	NextJS   NextJSConfig
 }
 
 var App *Config
@@ -58,7 +69,14 @@ func Load() error {
 
 	jwtExpire, _ := strconv.Atoi(getEnv("JWT_EXPIRE_HOURS", "24"))
 	jwtRefreshExpire, _ := strconv.Atoi(getEnv("JWT_REFRESH_EXPIRE_HOURS", "168"))
-	maxUploadMB, _ := strconv.ParseInt(getEnv("MAX_UPLOAD_SIZE_MB", "10"), 10, 64)
+
+	maxImageMB, _ := strconv.ParseInt(getEnv("MAX_UPLOAD_IMAGE_MB", "10"), 10, 64)
+	maxVideoMB, _ := strconv.ParseInt(getEnv("MAX_UPLOAD_VIDEO_MB", "500"), 10, 64)
+	maxDocumentMB, _ := strconv.ParseInt(getEnv("MAX_UPLOAD_DOCUMENT_MB", "0"), 10, 64)
+
+	imageMaxWidth, _ := strconv.Atoi(getEnv("IMAGE_MAX_WIDTH", "1920"))
+	imageMaxHeight, _ := strconv.Atoi(getEnv("IMAGE_MAX_HEIGHT", "1920"))
+	imageQuality, _ := strconv.Atoi(getEnv("IMAGE_QUALITY", "80"))
 
 	App = &Config{
 		App: AppConfig{
@@ -81,11 +99,20 @@ func Load() error {
 			RefreshExpireHours: jwtRefreshExpire,
 		},
 		Upload: UploadConfig{
-			Path:          getEnv("UPLOAD_PATH", "./uploads"),
-			MaxUploadSize: maxUploadMB * 1024 * 1024,
+			Path:            getEnv("UPLOAD_PATH", "./uploads"),
+			MaxImageSize:    maxImageMB * 1024 * 1024,
+			MaxVideoSize:    maxVideoMB * 1024 * 1024,
+			MaxDocumentSize: maxDocumentMB * 1024 * 1024,
+			ImageMaxWidth:   imageMaxWidth,
+			ImageMaxHeight:  imageMaxHeight,
+			ImageQuality:    imageQuality,
 		},
 		CORS: CORSConfig{
 			AllowedOrigins: getEnv("CORS_ALLOWED_ORIGINS", "http://localhost:3000"),
+		},
+		NextJS: NextJSConfig{
+			URL:              getEnv("NEXTJS_URL", "http://localhost:3000"),
+			RevalidateSecret: getEnv("NEXTJS_REVALIDATE_SECRET", ""),
 		},
 	}
 
