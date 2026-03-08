@@ -105,5 +105,30 @@ func Register(r *gin.Engine) {
 			lembaga.DELETE("/:id/force", admin.ForceDeleteLembaga)
 			lembaga.PUT("/:id/restore", admin.RestoreLembaga)
 		}
+
+		kategoriBerita := protected.Group("/berita/kategori")
+		{
+			kategoriBerita.GET("", admin.GetKategoriBeritaList)
+			kategoriBerita.POST("", admin.CreateKategoriBerita)
+			kategoriBerita.GET("/trash", admin.GetKategoriBeritaList)
+			kategoriBerita.GET("/:id", admin.GetKategoriBerita)
+			kategoriBerita.PUT("/:id", admin.UpdateKategoriBerita)
+			kategoriBerita.DELETE("/:id", admin.DeleteKategoriBerita)
+			kategoriBerita.DELETE("/:id/force", admin.ForceDeleteKategoriBerita)
+			kategoriBerita.PUT("/:id/restore", admin.RestoreKategoriBerita)
+		}
+
+		berita := protected.Group("/berita")
+		{
+			berita.GET("", admin.GetBeritaList)
+			berita.POST("", admin.CreateBerita)
+			berita.GET("/trash", admin.GetBeritaList)
+			berita.GET("/:id", admin.GetBerita)
+			berita.PUT("/:id", admin.UpdateBerita)
+			berita.DELETE("/:id", admin.DeleteBerita)
+			berita.DELETE("/:id/force", admin.ForceDeleteBerita)
+			berita.PUT("/:id/restore", admin.RestoreBerita)
+			berita.PUT("/:id/publish", admin.PublishBerita)
+		}
 	}
 }
