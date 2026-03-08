@@ -14,6 +14,11 @@ type ProfilDesaRequest struct {
 	Telepon       *string  `json:"telepon"`
 	Email         *string  `json:"email"`
 	Website       *string  `json:"website"`
+	Facebook      *string  `json:"facebook"`
+	Instagram     *string  `json:"instagram"`
+	Twitter       *string  `json:"twitter"`
+	Youtube       *string  `json:"youtube"`
+	Tiktok        *string  `json:"tiktok"`
 	LuasWilayah   *float64 `json:"luas_wilayah"`
 	JumlahDusun   uint     `json:"jumlah_dusun"`
 	JumlahRW      uint     `json:"jumlah_rw"`

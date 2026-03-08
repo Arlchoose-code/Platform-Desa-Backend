@@ -17,6 +17,11 @@ type ProfilDesa struct {
 	Telepon       *string   `gorm:"size:20" json:"telepon"`
 	Email         *string   `gorm:"size:100" json:"email"`
 	Website       *string   `gorm:"size:255" json:"website"`
+	Facebook      *string   `gorm:"size:255" json:"facebook"`
+	Instagram     *string   `gorm:"size:255" json:"instagram"`
+	Twitter       *string   `gorm:"size:255" json:"twitter"`
+	Youtube       *string   `gorm:"size:255" json:"youtube"`
+	Tiktok        *string   `gorm:"size:255" json:"tiktok"`
 	LuasWilayah   *float64  `json:"luas_wilayah"`
 	JumlahDusun   uint      `gorm:"default:0" json:"jumlah_dusun"`
 	JumlahRW      uint      `gorm:"default:0" json:"jumlah_rw"`

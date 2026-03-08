@@ -14,12 +14,14 @@ import (
 func Register(r *gin.Engine) {
 	api := r.Group("/api/v1")
 
+	// Auth (tanpa middleware)
 	auth := api.Group("/admin/auth")
 	{
 		auth.POST("/login", controllers.Login)
 		auth.POST("/refresh", controllers.RefreshToken)
 	}
 
+	// Protected - wajib JWT
 	protected := api.Group("/admin")
 	protected.Use(middlewares.Auth())
 	{
@@ -28,6 +30,7 @@ func Register(r *gin.Engine) {
 		protected.PUT("/auth/me", controllers.UpdateMe)
 		protected.PUT("/auth/me/password", controllers.ChangePassword)
 
+		// Users - hanya superadmin
 		users := protected.Group("/users")
 		users.Use(middlewares.Role("superadmin"))
 		{
@@ -41,6 +44,8 @@ func Register(r *gin.Engine) {
 			users.PUT("/:id/reset-password", admin.ResetPassword)
 			users.DELETE("/:id", admin.DeleteUser)
 		}
+
+		// Media
 		media := protected.Group("/media")
 		{
 			media.GET("", admin.GetMediaList)
@@ -51,6 +56,24 @@ func Register(r *gin.Engine) {
 			media.POST("/drive", admin.AddDriveMedia)
 			media.DELETE("/batch", admin.DeleteMultipleMedia)
 			media.DELETE("/:id", admin.DeleteMedia)
+		}
+
+		// Profil Desa (singleton)
+		protected.GET("/profil", admin.GetProfilDesa)
+		protected.PUT("/profil", admin.UpdateProfilDesa)
+
+		// Potensi Desa
+		potensi := protected.Group("/potensi")
+		{
+			potensi.GET("", admin.GetPotensiList)
+			potensi.POST("", admin.CreatePotensi)
+			potensi.GET("/trash", admin.GetPotensiList)
+			potensi.GET("/:id", admin.GetPotensi)
+			potensi.PUT("/:id", admin.UpdatePotensi)
+			potensi.DELETE("/:id", admin.DeletePotensi)
+			potensi.DELETE("/:id/force", admin.ForceDeletePotensi)
+			potensi.PUT("/:id/restore", admin.RestorePotensi)
+			potensi.PUT("/:id/publish", admin.PublishPotensi)
 		}
 	}
 }
