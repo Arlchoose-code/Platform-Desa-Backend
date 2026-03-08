@@ -8,7 +8,8 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-	"time"
+
+	"github.com/Arlchoose-code/platform-desa-backend/database"
 )
 
 var (
@@ -32,5 +33,33 @@ func GenerateSlug(text string) string {
 }
 
 func UniqueSlug(base string) string {
-	return fmt.Sprintf("%s-%d", base, time.Now().Unix())
+	slug := base
+	tables := []string{
+		"beritas", "kategori_beritas",
+		"wisatas", "kategori_wisatas",
+		"umkms", "kategori_u_m_k_m_s",
+		"galeris", "kategori_galeris",
+		"regulasis", "kategori_regulasis",
+		"f_a_q_s",
+		"pejabats",
+		"pengumumans",
+		"agendas",
+		"potensi_desas",
+	}
+
+	for i := 1; ; i++ {
+		found := false
+		for _, table := range tables {
+			var count int64
+			database.DB.Table(table).Where("slug = ?", slug).Count(&count)
+			if count > 0 {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return slug
+		}
+		slug = fmt.Sprintf("%s-%d", base, i)
+	}
 }

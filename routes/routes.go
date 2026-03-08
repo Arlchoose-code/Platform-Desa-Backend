@@ -177,5 +177,33 @@ func Register(r *gin.Engine) {
 			kependudukan.PUT("/pekerjaan/:id", admin.UpdateStatistikPekerjaan)
 			kependudukan.DELETE("/pekerjaan/:id", admin.DeleteStatistikPekerjaan)
 		}
+
+		kategoriWisata := protected.Group("/wisata/kategori")
+		{
+			kategoriWisata.GET("", admin.GetKategoriWisataList)
+			kategoriWisata.POST("", admin.CreateKategoriWisata)
+			kategoriWisata.GET("/trash", admin.GetKategoriWisataList)
+			kategoriWisata.GET("/:id", admin.GetKategoriWisata)
+			kategoriWisata.PUT("/:id", admin.UpdateKategoriWisata)
+			kategoriWisata.DELETE("/:id", admin.DeleteKategoriWisata)
+			kategoriWisata.DELETE("/:id/force", admin.ForceDeleteKategoriWisata)
+			kategoriWisata.PUT("/:id/restore", admin.RestoreKategoriWisata)
+		}
+
+		wisata := protected.Group("/wisata")
+		{
+			wisata.GET("", admin.GetWisataList)
+			wisata.POST("", admin.CreateWisata)
+			wisata.GET("/trash", admin.GetWisataList)
+			wisata.GET("/:id", admin.GetWisata)
+			wisata.PUT("/:id", admin.UpdateWisata)
+			wisata.DELETE("/:id", admin.DeleteWisata)
+			wisata.DELETE("/:id/force", admin.ForceDeleteWisata)
+			wisata.PUT("/:id/restore", admin.RestoreWisata)
+			wisata.PUT("/:id/publish", admin.PublishWisata)
+			wisata.POST("/:id/galeri", admin.AddWisataGaleri)
+			wisata.DELETE("/:id/galeri/:galeri_id", admin.DeleteWisataGaleri)
+			wisata.PUT("/:id/galeri/urutan", admin.UpdateUrutanWisataGaleri)
+		}
 	}
 }
