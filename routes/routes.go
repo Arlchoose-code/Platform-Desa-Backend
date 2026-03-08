@@ -156,5 +156,26 @@ func Register(r *gin.Engine) {
 			agenda.PUT("/:id/restore", admin.RestoreAgenda)
 			agenda.PUT("/:id/publish", admin.PublishAgenda)
 		}
+
+		kependudukan := protected.Group("/kependudukan")
+		{
+			kependudukan.GET("/penduduk", admin.GetStatistikPendudukList)
+			kependudukan.POST("/penduduk", admin.CreateStatistikPenduduk)
+			kependudukan.GET("/penduduk/:id", admin.GetStatistikPenduduk)
+			kependudukan.PUT("/penduduk/:id", admin.UpdateStatistikPenduduk)
+			kependudukan.DELETE("/penduduk/:id", admin.DeleteStatistikPenduduk)
+
+			kependudukan.GET("/pendidikan", admin.GetStatistikPendidikanList)
+			kependudukan.POST("/pendidikan", admin.CreateStatistikPendidikan)
+			kependudukan.GET("/pendidikan/:id", admin.GetStatistikPendidikan)
+			kependudukan.PUT("/pendidikan/:id", admin.UpdateStatistikPendidikan)
+			kependudukan.DELETE("/pendidikan/:id", admin.DeleteStatistikPendidikan)
+
+			kependudukan.GET("/pekerjaan", admin.GetStatistikPekerjaanList)
+			kependudukan.POST("/pekerjaan", admin.CreateStatistikPekerjaan)
+			kependudukan.GET("/pekerjaan/:id", admin.GetStatistikPekerjaan)
+			kependudukan.PUT("/pekerjaan/:id", admin.UpdateStatistikPekerjaan)
+			kependudukan.DELETE("/pekerjaan/:id", admin.DeleteStatistikPekerjaan)
+		}
 	}
 }
