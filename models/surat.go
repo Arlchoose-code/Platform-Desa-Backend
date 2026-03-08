@@ -32,7 +32,7 @@ type PengajuanSurat struct {
 	Status         string         `gorm:"size:20;default:pending" json:"status"`
 	CatatanAdmin   *string        `gorm:"type:text" json:"catatan_admin"`
 	FileHasilID    *uint          `json:"file_hasil_id"`
-	DipresesOleh   *uint          `json:"diproses_oleh"`
+	DiprosesOleh   *uint          `json:"diproses_oleh"`
 	DiprosesPada   *time.Time     `json:"diproses_pada"`
 	SelesaiPada    *time.Time     `json:"selesai_pada"`
 	CreatedAt      time.Time      `json:"created_at"`

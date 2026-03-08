@@ -259,5 +259,27 @@ func Register(r *gin.Engine) {
 			umkm.PUT("/:id/produk/:produk_id", admin.UpdateProdukUMKM)
 			umkm.DELETE("/:id/produk/:produk_id", admin.DeleteProdukUMKM)
 		}
+
+		jenisSurat := protected.Group("/surat/jenis")
+		{
+			jenisSurat.GET("", admin.GetJenisSuratList)
+			jenisSurat.POST("", admin.CreateJenisSurat)
+			jenisSurat.GET("/trash", admin.GetJenisSuratList)
+			jenisSurat.GET("/:id", admin.GetJenisSurat)
+			jenisSurat.PUT("/:id", admin.UpdateJenisSurat)
+			jenisSurat.DELETE("/:id", admin.DeleteJenisSurat)
+			jenisSurat.DELETE("/:id/force", admin.ForceDeleteJenisSurat)
+			jenisSurat.PUT("/:id/restore", admin.RestoreJenisSurat)
+		}
+
+		surat := protected.Group("/surat")
+		{
+			surat.GET("", admin.GetPengajuanSuratList)
+			surat.POST("", admin.AjukanSurat)
+			surat.GET("/:id", admin.GetPengajuanSurat)
+			surat.PUT("/:id/proses", admin.ProsesSurat)
+			surat.PUT("/:id/selesai", admin.SelesaikanSurat)
+			surat.PUT("/:id/tolak", admin.TolakSurat)
+		}
 	}
 }
