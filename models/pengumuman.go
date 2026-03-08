@@ -9,6 +9,7 @@ import "time"
 type Pengumuman struct {
 	ID             uint       `gorm:"primarykey" json:"id"`
 	Judul          string     `gorm:"size:255;not null" json:"judul"`
+	Slug           string     `gorm:"size:255;not null;uniqueIndex" json:"slug"`
 	Isi            string     `gorm:"type:longtext;not null" json:"isi"`
 	FileID         *uint      `json:"file_id"`
 	PenulisID      *uint      `json:"penulis_id"`
@@ -27,6 +28,7 @@ type Pengumuman struct {
 type Agenda struct {
 	ID             uint       `gorm:"primarykey" json:"id"`
 	Judul          string     `gorm:"size:255;not null" json:"judul"`
+	Slug           string     `gorm:"size:255;not null;uniqueIndex" json:"slug"`
 	Deskripsi      *string    `gorm:"type:text" json:"deskripsi"`
 	Lokasi         *string    `gorm:"size:255" json:"lokasi"`
 	TanggalMulai   time.Time  `gorm:"not null" json:"tanggal_mulai"`

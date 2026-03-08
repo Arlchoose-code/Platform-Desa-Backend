@@ -14,14 +14,12 @@ import (
 func Register(r *gin.Engine) {
 	api := r.Group("/api/v1")
 
-	// Auth (tanpa middleware)
 	auth := api.Group("/admin/auth")
 	{
 		auth.POST("/login", controllers.Login)
 		auth.POST("/refresh", controllers.RefreshToken)
 	}
 
-	// Protected - wajib JWT
 	protected := api.Group("/admin")
 	protected.Use(middlewares.Auth())
 	{
@@ -30,7 +28,6 @@ func Register(r *gin.Engine) {
 		protected.PUT("/auth/me", controllers.UpdateMe)
 		protected.PUT("/auth/me/password", controllers.ChangePassword)
 
-		// Users - hanya superadmin
 		users := protected.Group("/users")
 		users.Use(middlewares.Role("superadmin"))
 		{
@@ -45,7 +42,6 @@ func Register(r *gin.Engine) {
 			users.DELETE("/:id", admin.DeleteUser)
 		}
 
-		// Media
 		media := protected.Group("/media")
 		{
 			media.GET("", admin.GetMediaList)
@@ -58,11 +54,9 @@ func Register(r *gin.Engine) {
 			media.DELETE("/:id", admin.DeleteMedia)
 		}
 
-		// Profil Desa (singleton)
 		protected.GET("/profil", admin.GetProfilDesa)
 		protected.PUT("/profil", admin.UpdateProfilDesa)
 
-		// Potensi Desa
 		potensi := protected.Group("/potensi")
 		{
 			potensi.GET("", admin.GetPotensiList)
@@ -74,6 +68,42 @@ func Register(r *gin.Engine) {
 			potensi.DELETE("/:id/force", admin.ForceDeletePotensi)
 			potensi.PUT("/:id/restore", admin.RestorePotensi)
 			potensi.PUT("/:id/publish", admin.PublishPotensi)
+		}
+
+		jabatan := protected.Group("/jabatan")
+		{
+			jabatan.GET("", admin.GetJabatanList)
+			jabatan.POST("", admin.CreateJabatan)
+			jabatan.GET("/trash", admin.GetJabatanList)
+			jabatan.GET("/:id", admin.GetJabatan)
+			jabatan.PUT("/:id", admin.UpdateJabatan)
+			jabatan.DELETE("/:id", admin.DeleteJabatan)
+			jabatan.DELETE("/:id/force", admin.ForceDeleteJabatan)
+			jabatan.PUT("/:id/restore", admin.RestoreJabatan)
+		}
+
+		pejabat := protected.Group("/pejabat")
+		{
+			pejabat.GET("", admin.GetPejabatList)
+			pejabat.POST("", admin.CreatePejabat)
+			pejabat.GET("/trash", admin.GetPejabatList)
+			pejabat.GET("/:id", admin.GetPejabat)
+			pejabat.PUT("/:id", admin.UpdatePejabat)
+			pejabat.DELETE("/:id", admin.DeletePejabat)
+			pejabat.DELETE("/:id/force", admin.ForceDeletePejabat)
+			pejabat.PUT("/:id/restore", admin.RestorePejabat)
+		}
+
+		lembaga := protected.Group("/lembaga")
+		{
+			lembaga.GET("", admin.GetLembagaList)
+			lembaga.POST("", admin.CreateLembaga)
+			lembaga.GET("/trash", admin.GetLembagaList)
+			lembaga.GET("/:id", admin.GetLembaga)
+			lembaga.PUT("/:id", admin.UpdateLembaga)
+			lembaga.DELETE("/:id", admin.DeleteLembaga)
+			lembaga.DELETE("/:id/force", admin.ForceDeleteLembaga)
+			lembaga.PUT("/:id/restore", admin.RestoreLembaga)
 		}
 	}
 }

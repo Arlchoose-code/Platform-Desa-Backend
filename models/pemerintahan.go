@@ -8,7 +8,7 @@ import "time"
 
 type Jabatan struct {
 	ID        uint      `gorm:"primarykey" json:"id"`
-	Nama      string    `gorm:"size:100;not null" json:"nama"`
+	Nama      string    `gorm:"size:100;not null;uniqueIndex" json:"nama"`
 	Level     uint      `gorm:"default:0" json:"level"`
 	ParentID  *uint     `json:"parent_id"`
 	Urutan    uint      `gorm:"default:0" json:"urutan"`
@@ -20,23 +20,35 @@ type Jabatan struct {
 }
 
 type Pejabat struct {
-	ID             uint      `gorm:"primarykey" json:"id"`
-	JabatanID      uint      `gorm:"not null" json:"jabatan_id"`
-	JabatanNama    string    `gorm:"size:100;not null" json:"jabatan_nama"`
-	Nama           string    `gorm:"size:100;not null" json:"nama"`
-	NIP            *string   `gorm:"size:50" json:"nip"`
-	FotoID         *uint     `json:"foto_id"`
-	Pendidikan     *string   `gorm:"size:100" json:"pendidikan"`
-	PeriodeMulai   *int      `json:"periode_mulai"`
-	PeriodeSelesai *int      `json:"periode_selesai"`
-	Biodata        *string   `gorm:"type:text" json:"biodata"`
-	IsActive       bool      `gorm:"default:true" json:"is_active"`
-	Urutan         uint      `gorm:"default:0" json:"urutan"`
-	IsDeleted      bool      `gorm:"default:false" json:"-"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
-	Jabatan        *Jabatan  `gorm:"foreignKey:JabatanID" json:"jabatan,omitempty"`
-	Foto           *Media    `gorm:"foreignKey:FotoID" json:"foto,omitempty"`
+	ID             uint                `gorm:"primarykey" json:"id"`
+	JabatanID      uint                `gorm:"not null" json:"jabatan_id"`
+	JabatanNama    string              `gorm:"size:100;not null" json:"jabatan_nama"`
+	Nama           string              `gorm:"size:100;not null" json:"nama"`
+	Slug           string              `gorm:"size:150;not null;uniqueIndex" json:"slug"`
+	NIP            *string             `gorm:"size:50" json:"nip"`
+	FotoID         *uint               `json:"foto_id"`
+	PeriodeMulai   *int                `json:"periode_mulai"`
+	PeriodeSelesai *int                `json:"periode_selesai"`
+	Biodata        *string             `gorm:"type:text" json:"biodata"`
+	IsActive       bool                `gorm:"default:true" json:"is_active"`
+	Urutan         uint                `gorm:"default:0" json:"urutan"`
+	IsDeleted      bool                `gorm:"default:false" json:"-"`
+	CreatedAt      time.Time           `json:"created_at"`
+	UpdatedAt      time.Time           `json:"updated_at"`
+	Jabatan        *Jabatan            `gorm:"foreignKey:JabatanID" json:"jabatan,omitempty"`
+	Foto           *Media              `gorm:"foreignKey:FotoID" json:"foto,omitempty"`
+	Pendidikan     []PejabatPendidikan `gorm:"foreignKey:PejabatID" json:"pendidikan,omitempty"`
+}
+
+type PejabatPendidikan struct {
+	ID        uint      `gorm:"primarykey" json:"id"`
+	PejabatID uint      `gorm:"not null" json:"pejabat_id"`
+	Jenjang   string    `gorm:"size:10;not null" json:"jenjang"`
+	Jurusan   *string   `gorm:"size:150" json:"jurusan"`
+	Institusi *string   `gorm:"size:150" json:"institusi"`
+	Tahun     *int      `json:"tahun"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type LembagaDesa struct {
