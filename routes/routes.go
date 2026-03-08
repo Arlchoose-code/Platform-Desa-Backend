@@ -205,5 +205,30 @@ func Register(r *gin.Engine) {
 			wisata.DELETE("/:id/galeri/:galeri_id", admin.DeleteWisataGaleri)
 			wisata.PUT("/:id/galeri/urutan", admin.UpdateUrutanWisataGaleri)
 		}
+
+		kategoriGaleri := protected.Group("/galeri/kategori")
+		{
+			kategoriGaleri.GET("", admin.GetKategoriGaleriList)
+			kategoriGaleri.POST("", admin.CreateKategoriGaleri)
+			kategoriGaleri.GET("/trash", admin.GetKategoriGaleriList)
+			kategoriGaleri.GET("/:id", admin.GetKategoriGaleri)
+			kategoriGaleri.PUT("/:id", admin.UpdateKategoriGaleri)
+			kategoriGaleri.DELETE("/:id", admin.DeleteKategoriGaleri)
+			kategoriGaleri.DELETE("/:id/force", admin.ForceDeleteKategoriGaleri)
+			kategoriGaleri.PUT("/:id/restore", admin.RestoreKategoriGaleri)
+		}
+
+		galeri := protected.Group("/galeri")
+		{
+			galeri.GET("", admin.GetGaleriList)
+			galeri.POST("", admin.CreateGaleri)
+			galeri.GET("/trash", admin.GetGaleriList)
+			galeri.GET("/:id", admin.GetGaleri)
+			galeri.PUT("/:id", admin.UpdateGaleri)
+			galeri.DELETE("/:id", admin.DeleteGaleri)
+			galeri.DELETE("/:id/force", admin.ForceDeleteGaleri)
+			galeri.PUT("/:id/restore", admin.RestoreGaleri)
+			galeri.PUT("/:id/publish", admin.PublishGaleri)
+		}
 	}
 }
