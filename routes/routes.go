@@ -130,5 +130,31 @@ func Register(r *gin.Engine) {
 			berita.PUT("/:id/restore", admin.RestoreBerita)
 			berita.PUT("/:id/publish", admin.PublishBerita)
 		}
+
+		pengumuman := protected.Group("/pengumuman")
+		{
+			pengumuman.GET("", admin.GetPengumumanList)
+			pengumuman.POST("", admin.CreatePengumuman)
+			pengumuman.GET("/trash", admin.GetPengumumanList)
+			pengumuman.GET("/:id", admin.GetPengumuman)
+			pengumuman.PUT("/:id", admin.UpdatePengumuman)
+			pengumuman.DELETE("/:id", admin.DeletePengumuman)
+			pengumuman.DELETE("/:id/force", admin.ForceDeletePengumuman)
+			pengumuman.PUT("/:id/restore", admin.RestorePengumuman)
+			pengumuman.PUT("/:id/publish", admin.PublishPengumuman)
+		}
+
+		agenda := protected.Group("/agenda")
+		{
+			agenda.GET("", admin.GetAgendaList)
+			agenda.POST("", admin.CreateAgenda)
+			agenda.GET("/trash", admin.GetAgendaList)
+			agenda.GET("/:id", admin.GetAgenda)
+			agenda.PUT("/:id", admin.UpdateAgenda)
+			agenda.DELETE("/:id", admin.DeleteAgenda)
+			agenda.DELETE("/:id/force", admin.ForceDeleteAgenda)
+			agenda.PUT("/:id/restore", admin.RestoreAgenda)
+			agenda.PUT("/:id/publish", admin.PublishAgenda)
+		}
 	}
 }
