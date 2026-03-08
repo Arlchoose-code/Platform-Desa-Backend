@@ -230,5 +230,34 @@ func Register(r *gin.Engine) {
 			galeri.PUT("/:id/restore", admin.RestoreGaleri)
 			galeri.PUT("/:id/publish", admin.PublishGaleri)
 		}
+
+		kategoriUMKM := protected.Group("/umkm/kategori")
+		{
+			kategoriUMKM.GET("", admin.GetKategoriUMKMList)
+			kategoriUMKM.POST("", admin.CreateKategoriUMKM)
+			kategoriUMKM.GET("/trash", admin.GetKategoriUMKMList)
+			kategoriUMKM.GET("/:id", admin.GetKategoriUMKM)
+			kategoriUMKM.PUT("/:id", admin.UpdateKategoriUMKM)
+			kategoriUMKM.DELETE("/:id", admin.DeleteKategoriUMKM)
+			kategoriUMKM.DELETE("/:id/force", admin.ForceDeleteKategoriUMKM)
+			kategoriUMKM.PUT("/:id/restore", admin.RestoreKategoriUMKM)
+		}
+
+		umkm := protected.Group("/umkm")
+		{
+			umkm.GET("", admin.GetUMKMList)
+			umkm.POST("", admin.CreateUMKM)
+			umkm.GET("/trash", admin.GetUMKMList)
+			umkm.GET("/:id", admin.GetUMKM)
+			umkm.PUT("/:id", admin.UpdateUMKM)
+			umkm.DELETE("/:id", admin.DeleteUMKM)
+			umkm.DELETE("/:id/force", admin.ForceDeleteUMKM)
+			umkm.PUT("/:id/restore", admin.RestoreUMKM)
+			umkm.PUT("/:id/publish", admin.PublishUMKM)
+			umkm.GET("/:id/produk", admin.GetProdukUMKMList)
+			umkm.POST("/:id/produk", admin.CreateProdukUMKM)
+			umkm.PUT("/:id/produk/:produk_id", admin.UpdateProdukUMKM)
+			umkm.DELETE("/:id/produk/:produk_id", admin.DeleteProdukUMKM)
+		}
 	}
 }
