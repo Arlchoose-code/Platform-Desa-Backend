@@ -307,5 +307,30 @@ func Register(r *gin.Engine) {
 			pengaduan.PUT("/:id/selesai", admin.SelesaikanPengaduan)
 			pengaduan.PUT("/:id/tolak", admin.TolakPengaduan)
 		}
+
+		kategoriRegulasi := protected.Group("/regulasi/kategori")
+		{
+			kategoriRegulasi.GET("", admin.GetKategoriRegulasiList)
+			kategoriRegulasi.POST("", admin.CreateKategoriRegulasi)
+			kategoriRegulasi.GET("/trash", admin.GetKategoriRegulasiList)
+			kategoriRegulasi.GET("/:id", admin.GetKategoriRegulasi)
+			kategoriRegulasi.PUT("/:id", admin.UpdateKategoriRegulasi)
+			kategoriRegulasi.DELETE("/:id", admin.DeleteKategoriRegulasi)
+			kategoriRegulasi.DELETE("/:id/force", admin.ForceDeleteKategoriRegulasi)
+			kategoriRegulasi.PUT("/:id/restore", admin.RestoreKategoriRegulasi)
+		}
+
+		regulasi := protected.Group("/regulasi")
+		{
+			regulasi.GET("", admin.GetRegulasiList)
+			regulasi.POST("", admin.CreateRegulasi)
+			regulasi.GET("/trash", admin.GetRegulasiList)
+			regulasi.GET("/:id", admin.GetRegulasi)
+			regulasi.PUT("/:id", admin.UpdateRegulasi)
+			regulasi.DELETE("/:id", admin.DeleteRegulasi)
+			regulasi.DELETE("/:id/force", admin.ForceDeleteRegulasi)
+			regulasi.PUT("/:id/restore", admin.RestoreRegulasi)
+			regulasi.PUT("/:id/publish", admin.PublishRegulasi)
+		}
 	}
 }

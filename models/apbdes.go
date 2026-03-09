@@ -71,6 +71,7 @@ type Regulasi struct {
 	KategoriNama  *string           `gorm:"size:100" json:"kategori_nama"`
 	Nomor         *string           `gorm:"size:100" json:"nomor"`
 	Judul         string            `gorm:"size:255;not null" json:"judul"`
+	Slug          string            `gorm:"size:255;not null;uniqueIndex" json:"slug"`
 	Tentang       *string           `gorm:"type:text" json:"tentang"`
 	Tahun         *int              `json:"tahun"`
 	TanggalTerbit *time.Time        `json:"tanggal_terbit"`
