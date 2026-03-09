@@ -342,5 +342,19 @@ func Register(r *gin.Engine) {
 			peta.DELETE("/:id", admin.DeletePetaFasilitas)
 			peta.PUT("/:id/publish", admin.PublishPetaFasilitas)
 		}
+
+		faq := protected.Group("/faq")
+		{
+			faq.GET("", admin.GetFAQList)
+			faq.POST("", admin.CreateFAQ)
+			faq.GET("/trash", admin.GetFAQList)
+			faq.PUT("/urutan", admin.UrutanFAQ)
+			faq.GET("/:id", admin.GetFAQ)
+			faq.PUT("/:id", admin.UpdateFAQ)
+			faq.DELETE("/:id", admin.DeleteFAQ)
+			faq.DELETE("/:id/force", admin.ForceDeleteFAQ)
+			faq.PUT("/:id/restore", admin.RestoreFAQ)
+			faq.PUT("/:id/publish", admin.PublishFAQ)
+		}
 	}
 }
