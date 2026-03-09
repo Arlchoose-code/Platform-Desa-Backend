@@ -7,6 +7,7 @@ package routes
 import (
 	"github.com/Arlchoose-code/platform-desa-backend/controllers"
 	"github.com/Arlchoose-code/platform-desa-backend/controllers/admin"
+	"github.com/Arlchoose-code/platform-desa-backend/controllers/public"
 	"github.com/Arlchoose-code/platform-desa-backend/middlewares"
 	"github.com/gin-gonic/gin"
 )
@@ -14,12 +15,85 @@ import (
 func Register(r *gin.Engine) {
 	api := r.Group("/api/v1")
 
+	// ─── Public Routes ───────────────────────────────────────────────────────
+	pub := api.Group("/public")
+	{
+		// Settings (general, seo, sosmed, hero, footer)
+		pub.GET("/settings", public.GetSettingsPublik)
+
+		// Profil & Potensi
+		pub.GET("/profil", public.GetProfilDesa)
+		pub.GET("/potensi", public.GetPotensiList)
+
+		// Pemerintahan
+		pub.GET("/jabatan", public.GetJabatanList)
+		pub.GET("/pejabat", public.GetPejabatList)
+		pub.GET("/pejabat/:slug", public.GetPejabat)
+		pub.GET("/lembaga", public.GetLembagaList)
+
+		// Berita
+		pub.GET("/berita/kategori", public.GetKategoriBeritaList)
+		pub.GET("/berita", public.GetBeritaList)
+		pub.GET("/berita/:slug", public.GetBerita)
+
+		// Pengumuman & Agenda
+		pub.GET("/pengumuman", public.GetPengumumanList)
+		pub.GET("/pengumuman/:slug", public.GetPengumuman)
+		pub.GET("/agenda", public.GetAgendaList)
+		pub.GET("/agenda/:slug", public.GetAgenda)
+
+		// Kependudukan
+		pub.GET("/kependudukan/penduduk", public.GetStatistikPendudukList)
+		pub.GET("/kependudukan/pendidikan", public.GetStatistikPendidikanList)
+		pub.GET("/kependudukan/pekerjaan", public.GetStatistikPekerjaanList)
+
+		// Wisata
+		pub.GET("/wisata/kategori", public.GetKategoriWisataList)
+		pub.GET("/wisata", public.GetWisataList)
+		pub.GET("/wisata/:slug", public.GetWisata)
+
+		// Galeri
+		pub.GET("/galeri/kategori", public.GetKategoriGaleriList)
+		pub.GET("/galeri", public.GetGaleriList)
+
+		// UMKM
+		pub.GET("/umkm/kategori", public.GetKategoriUMKMList)
+		pub.GET("/umkm", public.GetUMKMList)
+		pub.GET("/umkm/:slug", public.GetUMKM)
+
+		// Surat
+		pub.GET("/surat/jenis", public.GetJenisSuratPublikList)
+		pub.POST("/surat", public.AjukanSuratPublik)
+		pub.GET("/surat/status/:nomor", public.CekStatusSurat)
+
+		// APBDes
+		pub.GET("/apbdes", public.GetAPBDesList)
+		pub.GET("/apbdes/:tahun", public.GetAPBDes)
+
+		// Pengaduan
+		pub.POST("/pengaduan", public.BuatPengaduanPublik)
+		pub.GET("/pengaduan/status/:nomor", public.CekStatusPengaduan)
+
+		// Regulasi
+		pub.GET("/regulasi/kategori", public.GetKategoriRegulasiList)
+		pub.GET("/regulasi", public.GetRegulasiList)
+		pub.GET("/regulasi/:slug", public.GetRegulasi)
+
+		// Peta
+		pub.GET("/peta", public.GetPetaFasilitasList)
+
+		// FAQ
+		pub.GET("/faq", public.GetFAQList)
+	}
+
+	// ─── Auth ─────────────────────────────────────────────────────────────────
 	auth := api.Group("/admin/auth")
 	{
 		auth.POST("/login", controllers.Login)
 		auth.POST("/refresh", controllers.RefreshToken)
 	}
 
+	// ─── Admin Routes (protected) ─────────────────────────────────────────────
 	protected := api.Group("/admin")
 	protected.Use(middlewares.Auth())
 	{

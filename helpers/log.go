@@ -10,6 +10,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func LogWithUser(userID uint, c *gin.Context, action, module, description string) {
+	ip := c.ClientIP()
+	log := models.ActivityLog{
+		UserID:      &userID,
+		Action:      action,
+		Module:      module,
+		Description: &description,
+		IPAddress:   &ip,
+	}
+	go database.DB.Create(&log)
+}
+
 func Log(c *gin.Context, action, module, description string) {
 	userID, exists := c.Get("user_id")
 	ip := c.ClientIP()

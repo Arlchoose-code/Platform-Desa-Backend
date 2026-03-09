@@ -48,7 +48,7 @@ func Login(c *gin.Context) {
 	now := time.Now()
 	database.DB.Model(&user).Update("last_login_at", now)
 
-	helpers.Log(c, "login", "auth", "Login berhasil")
+	helpers.LogWithUser(user.ID, c, "login", "auth", "Login berhasil")
 
 	helpers.OK(c, "Login berhasil", gin.H{
 		"access_token":  accessToken,
@@ -63,7 +63,8 @@ func Login(c *gin.Context) {
 }
 
 func Logout(c *gin.Context) {
-	helpers.Log(c, "logout", "auth", "Logout berhasil")
+	userID := c.GetUint("user_id")
+	helpers.LogWithUser(userID, c, "logout", "auth", "Logout berhasil")
 	helpers.OK(c, "Logout berhasil", nil)
 }
 
