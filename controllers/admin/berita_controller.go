@@ -72,6 +72,8 @@ func CreateKategoriBerita(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "berita", "Menambah kategori berita: "+req.Nama)
+
 	helpers.Created(c, "Kategori berhasil ditambahkan", kategori)
 }
 
@@ -111,6 +113,8 @@ func UpdateKategoriBerita(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "berita", "Memperbarui kategori berita: "+req.Nama)
+
 	helpers.OK(c, "Kategori berhasil diperbarui", kategori)
 }
 
@@ -135,6 +139,9 @@ func DeleteKategoriBerita(c *gin.Context) {
 	}
 
 	database.DB.Model(&kategori).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "berita", "Menghapus kategori berita: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dihapus", nil)
 }
 
@@ -157,6 +164,9 @@ func ForceDeleteKategoriBerita(c *gin.Context) {
 	})
 
 	database.DB.Delete(&kategori)
+
+	helpers.Log(c, "force_delete", "berita", "Menghapus permanen kategori berita: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dihapus permanen", nil)
 }
 
@@ -174,6 +184,9 @@ func RestoreKategoriBerita(c *gin.Context) {
 	}
 
 	database.DB.Model(&kategori).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "berita", "Memulihkan kategori berita: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dipulihkan", nil)
 }
 
@@ -264,6 +277,8 @@ func CreateBerita(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "berita", "Menambah berita: "+req.Judul)
+
 	if req.Status == "published" {
 		go helpers.RevalidatePaths("/berita", "/berita/"+berita.Slug)
 	}
@@ -322,6 +337,8 @@ func UpdateBerita(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "berita", "Memperbarui berita: "+req.Judul)
+
 	go helpers.RevalidatePaths("/berita", "/berita/"+berita.Slug)
 
 	database.DB.Preload("Kategori").Preload("Thumbnail").Preload("Penulis").First(&berita, berita.ID)
@@ -342,6 +359,8 @@ func DeleteBerita(c *gin.Context) {
 	}
 
 	database.DB.Model(&berita).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "berita", "Menghapus berita: "+berita.Judul)
 
 	go helpers.RevalidatePath("/berita")
 
@@ -370,6 +389,9 @@ func ForceDeleteBerita(c *gin.Context) {
 	}
 
 	database.DB.Delete(&berita)
+
+	helpers.Log(c, "force_delete", "berita", "Menghapus permanen berita: "+berita.Judul)
+
 	helpers.OK(c, "Berita berhasil dihapus permanen", nil)
 }
 
@@ -387,6 +409,9 @@ func RestoreBerita(c *gin.Context) {
 	}
 
 	database.DB.Model(&berita).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "berita", "Memulihkan berita: "+berita.Judul)
+
 	helpers.OK(c, "Berita berhasil dipulihkan", nil)
 }
 
@@ -405,6 +430,7 @@ func PublishBerita(c *gin.Context) {
 
 	if berita.Status == "published" {
 		database.DB.Model(&berita).Update("status", "draft")
+		helpers.Log(c, "unpublish", "berita", "Menyembunyikan berita: "+berita.Judul)
 		go helpers.RevalidatePaths("/berita", "/berita/"+berita.Slug)
 		helpers.OK(c, "Berita berhasil di-unpublish", gin.H{"status": "draft"})
 		return
@@ -415,6 +441,8 @@ func PublishBerita(c *gin.Context) {
 		"status":       "published",
 		"published_at": now,
 	})
+
+	helpers.Log(c, "publish", "berita", "Mempublikasikan berita: "+berita.Judul)
 
 	go helpers.RevalidatePaths("/berita", "/berita/"+berita.Slug)
 	helpers.OK(c, "Berita berhasil dipublikasikan", gin.H{"status": "published"})

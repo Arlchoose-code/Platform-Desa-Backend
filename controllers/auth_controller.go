@@ -48,15 +48,7 @@ func Login(c *gin.Context) {
 	now := time.Now()
 	database.DB.Model(&user).Update("last_login_at", now)
 
-	ip := c.ClientIP()
-	desc := "Login berhasil"
-	database.DB.Create(&models.ActivityLog{
-		UserID:      &user.ID,
-		Action:      "login",
-		Module:      "auth",
-		Description: &desc,
-		IPAddress:   &ip,
-	})
+	helpers.Log(c, "login", "auth", "Login berhasil")
 
 	helpers.OK(c, "Login berhasil", gin.H{
 		"access_token":  accessToken,
@@ -71,12 +63,7 @@ func Login(c *gin.Context) {
 }
 
 func Logout(c *gin.Context) {
-	userID := c.GetUint("user_id")
-	database.DB.Create(&models.ActivityLog{
-		UserID: &userID,
-		Action: "logout",
-		Module: "auth",
-	})
+	helpers.Log(c, "logout", "auth", "Logout berhasil")
 	helpers.OK(c, "Logout berhasil", nil)
 }
 
@@ -135,27 +122,11 @@ func UpdateMe(c *gin.Context) {
 		return
 	}
 
-	if req.Name != "" {
-		user.Name = req.Name
-	}
+	user.Name = req.Name
+	user.Phone = req.Phone
+	database.DB.Save(&user)
 
-	if req.Email != "" && req.Email != user.Email {
-		var existing models.User
-		if err := database.DB.Where("email = ? AND id != ?", req.Email, userID).First(&existing).Error; err == nil {
-			helpers.BadRequest(c, "Email sudah digunakan", nil)
-			return
-		}
-		user.Email = req.Email
-	}
-
-	if req.Phone != nil {
-		user.Phone = req.Phone
-	}
-
-	if err := database.DB.Save(&user).Error; err != nil {
-		helpers.InternalError(c, "Gagal memperbarui profil")
-		return
-	}
+	helpers.Log(c, "update", "auth", "Memperbarui profil")
 
 	helpers.OK(c, "Profil berhasil diperbarui", user)
 }
@@ -187,5 +158,8 @@ func ChangePassword(c *gin.Context) {
 	}
 
 	database.DB.Model(&user).Update("password", string(hashed))
+
+	helpers.Log(c, "update", "auth", "Mengubah password")
+
 	helpers.OK(c, "Password berhasil diubah", nil)
 }

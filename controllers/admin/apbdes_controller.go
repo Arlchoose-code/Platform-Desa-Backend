@@ -70,6 +70,8 @@ func CreateAPBDes(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "apbdes", "Menambah APBDes tahun "+strconv.Itoa(req.Tahun))
+
 	if req.IsPublished {
 		go helpers.RevalidatePath("/apbdes")
 	}
@@ -112,6 +114,8 @@ func UpdateAPBDes(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "apbdes", "Memperbarui APBDes tahun "+strconv.Itoa(req.Tahun))
+
 	go helpers.RevalidatePath("/apbdes")
 
 	database.DB.Preload("Dokumen").First(&data, data.ID)
@@ -134,6 +138,8 @@ func DeleteAPBDes(c *gin.Context) {
 	database.DB.Where("apbdes_id = ?", data.ID).Delete(&models.APBDesDetail{})
 	database.DB.Delete(&data)
 
+	helpers.Log(c, "delete", "apbdes", "Menghapus APBDes tahun "+strconv.Itoa(data.Tahun))
+
 	go helpers.RevalidatePath("/apbdes")
 
 	helpers.OK(c, "APBDes berhasil dihapus", nil)
@@ -155,12 +161,15 @@ func PublishAPBDes(c *gin.Context) {
 	newStatus := !data.IsPublished
 	database.DB.Model(&data).Update("is_published", newStatus)
 
-	go helpers.RevalidatePath("/apbdes")
-
 	msg := "APBDes berhasil dipublikasikan"
 	if !newStatus {
 		msg = "APBDes berhasil disembunyikan"
 	}
+
+	helpers.Log(c, "publish", "apbdes", msg+" tahun "+strconv.Itoa(data.Tahun))
+
+	go helpers.RevalidatePath("/apbdes")
+
 	helpers.OK(c, msg, gin.H{"is_published": newStatus})
 }
 
@@ -218,6 +227,8 @@ func CreateAPBDesDetail(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "apbdes", "Menambah detail "+req.Jenis+" APBDes tahun "+strconv.Itoa(apbdes.Tahun))
+
 	recalcAPBDes(apbdes.ID)
 	go helpers.RevalidatePath("/apbdes")
 
@@ -261,6 +272,8 @@ func UpdateAPBDesDetail(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "apbdes", "Memperbarui detail "+req.Jenis)
+
 	recalcAPBDes(uint(apbdesID))
 	go helpers.RevalidatePath("/apbdes")
 
@@ -287,6 +300,8 @@ func DeleteAPBDesDetail(c *gin.Context) {
 	}
 
 	database.DB.Delete(&detail)
+
+	helpers.Log(c, "delete", "apbdes", "Menghapus detail "+detail.Jenis+": "+detail.Uraian)
 
 	recalcAPBDes(uint(apbdesID))
 	go helpers.RevalidatePath("/apbdes")
