@@ -332,5 +332,15 @@ func Register(r *gin.Engine) {
 			regulasi.PUT("/:id/restore", admin.RestoreRegulasi)
 			regulasi.PUT("/:id/publish", admin.PublishRegulasi)
 		}
+
+		peta := protected.Group("/peta")
+		{
+			peta.GET("", admin.GetPetaFasilitasList)
+			peta.POST("", admin.CreatePetaFasilitas)
+			peta.GET("/:id", admin.GetPetaFasilitas)
+			peta.PUT("/:id", admin.UpdatePetaFasilitas)
+			peta.DELETE("/:id", admin.DeletePetaFasilitas)
+			peta.PUT("/:id/publish", admin.PublishPetaFasilitas)
+		}
 	}
 }
