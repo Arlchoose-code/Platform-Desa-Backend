@@ -295,5 +295,17 @@ func Register(r *gin.Engine) {
 			apbdes.PUT("/:id/detail/:detail_id", admin.UpdateAPBDesDetail)
 			apbdes.DELETE("/:id/detail/:detail_id", admin.DeleteAPBDesDetail)
 		}
+
+		pengaduan := protected.Group("/pengaduan")
+		{
+			pengaduan.GET("", admin.GetPengaduanList)
+			pengaduan.POST("", admin.BuatPengaduan)
+			pengaduan.GET("/:id", admin.GetPengaduan)
+			pengaduan.DELETE("/:id", admin.DeletePengaduan)
+			pengaduan.PUT("/:id/verifikasi", admin.VerifikasiPengaduan)
+			pengaduan.PUT("/:id/proses", admin.ProsesPengaduan)
+			pengaduan.PUT("/:id/selesai", admin.SelesaikanPengaduan)
+			pengaduan.PUT("/:id/tolak", admin.TolakPengaduan)
+		}
 	}
 }
