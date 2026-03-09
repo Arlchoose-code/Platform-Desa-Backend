@@ -92,11 +92,15 @@ func InitDB() {
 		// Sistem
 		&models.PetaFasilitas{},
 		&models.FAQ{},
-		&models.Tema{},
-		&models.UpdateLog{},
 	)
 	if err != nil {
 		log.Fatal("Gagal migrasi database:", err)
 	}
 	fmt.Println("Database migrated successfully!")
+
+	SeedSettings(DB)
+	fmt.Println("Settings seeded successfully!")
+
+	SeedUsers(DB)
+	fmt.Println("Users seeded successfully!")
 }

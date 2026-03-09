@@ -28,6 +28,7 @@ func Register(r *gin.Engine) {
 		protected.PUT("/auth/me", controllers.UpdateMe)
 		protected.PUT("/auth/me/password", controllers.ChangePassword)
 
+		// superadmin only
 		users := protected.Group("/users")
 		users.Use(middlewares.Role("superadmin"))
 		{
@@ -42,6 +43,9 @@ func Register(r *gin.Engine) {
 			users.DELETE("/:id", admin.DeleteUser)
 		}
 
+		// admin & superadmin only
+		adminOnly := middlewares.Role("superadmin", "admin")
+
 		media := protected.Group("/media")
 		{
 			media.GET("", admin.GetMediaList)
@@ -50,12 +54,12 @@ func Register(r *gin.Engine) {
 			media.POST("/batch", admin.UploadMultipleMedia)
 			media.POST("/youtube", admin.AddYoutubeMedia)
 			media.POST("/drive", admin.AddDriveMedia)
-			media.DELETE("/batch", admin.DeleteMultipleMedia)
-			media.DELETE("/:id", admin.DeleteMedia)
+			media.DELETE("/batch", adminOnly, admin.DeleteMultipleMedia)
+			media.DELETE("/:id", adminOnly, admin.DeleteMedia)
 		}
 
 		protected.GET("/profil", admin.GetProfilDesa)
-		protected.PUT("/profil", admin.UpdateProfilDesa)
+		protected.PUT("/profil", adminOnly, admin.UpdateProfilDesa)
 
 		potensi := protected.Group("/potensi")
 		{
@@ -64,13 +68,14 @@ func Register(r *gin.Engine) {
 			potensi.GET("/trash", admin.GetPotensiList)
 			potensi.GET("/:id", admin.GetPotensi)
 			potensi.PUT("/:id", admin.UpdatePotensi)
-			potensi.DELETE("/:id", admin.DeletePotensi)
-			potensi.DELETE("/:id/force", admin.ForceDeletePotensi)
-			potensi.PUT("/:id/restore", admin.RestorePotensi)
-			potensi.PUT("/:id/publish", admin.PublishPotensi)
+			potensi.DELETE("/:id", adminOnly, admin.DeletePotensi)
+			potensi.DELETE("/:id/force", adminOnly, admin.ForceDeletePotensi)
+			potensi.PUT("/:id/restore", adminOnly, admin.RestorePotensi)
+			potensi.PUT("/:id/publish", adminOnly, admin.PublishPotensi)
 		}
 
 		jabatan := protected.Group("/jabatan")
+		jabatan.Use(adminOnly)
 		{
 			jabatan.GET("", admin.GetJabatanList)
 			jabatan.POST("", admin.CreateJabatan)
@@ -83,6 +88,7 @@ func Register(r *gin.Engine) {
 		}
 
 		pejabat := protected.Group("/pejabat")
+		pejabat.Use(adminOnly)
 		{
 			pejabat.GET("", admin.GetPejabatList)
 			pejabat.POST("", admin.CreatePejabat)
@@ -95,6 +101,7 @@ func Register(r *gin.Engine) {
 		}
 
 		lembaga := protected.Group("/lembaga")
+		lembaga.Use(adminOnly)
 		{
 			lembaga.GET("", admin.GetLembagaList)
 			lembaga.POST("", admin.CreateLembaga)
@@ -109,13 +116,13 @@ func Register(r *gin.Engine) {
 		kategoriBerita := protected.Group("/berita/kategori")
 		{
 			kategoriBerita.GET("", admin.GetKategoriBeritaList)
-			kategoriBerita.POST("", admin.CreateKategoriBerita)
+			kategoriBerita.POST("", adminOnly, admin.CreateKategoriBerita)
 			kategoriBerita.GET("/trash", admin.GetKategoriBeritaList)
 			kategoriBerita.GET("/:id", admin.GetKategoriBerita)
-			kategoriBerita.PUT("/:id", admin.UpdateKategoriBerita)
-			kategoriBerita.DELETE("/:id", admin.DeleteKategoriBerita)
-			kategoriBerita.DELETE("/:id/force", admin.ForceDeleteKategoriBerita)
-			kategoriBerita.PUT("/:id/restore", admin.RestoreKategoriBerita)
+			kategoriBerita.PUT("/:id", adminOnly, admin.UpdateKategoriBerita)
+			kategoriBerita.DELETE("/:id", adminOnly, admin.DeleteKategoriBerita)
+			kategoriBerita.DELETE("/:id/force", adminOnly, admin.ForceDeleteKategoriBerita)
+			kategoriBerita.PUT("/:id/restore", adminOnly, admin.RestoreKategoriBerita)
 		}
 
 		berita := protected.Group("/berita")
@@ -125,10 +132,10 @@ func Register(r *gin.Engine) {
 			berita.GET("/trash", admin.GetBeritaList)
 			berita.GET("/:id", admin.GetBerita)
 			berita.PUT("/:id", admin.UpdateBerita)
-			berita.DELETE("/:id", admin.DeleteBerita)
-			berita.DELETE("/:id/force", admin.ForceDeleteBerita)
-			berita.PUT("/:id/restore", admin.RestoreBerita)
-			berita.PUT("/:id/publish", admin.PublishBerita)
+			berita.DELETE("/:id", adminOnly, admin.DeleteBerita)
+			berita.DELETE("/:id/force", adminOnly, admin.ForceDeleteBerita)
+			berita.PUT("/:id/restore", adminOnly, admin.RestoreBerita)
+			berita.PUT("/:id/publish", adminOnly, admin.PublishBerita)
 		}
 
 		pengumuman := protected.Group("/pengumuman")
@@ -138,10 +145,10 @@ func Register(r *gin.Engine) {
 			pengumuman.GET("/trash", admin.GetPengumumanList)
 			pengumuman.GET("/:id", admin.GetPengumuman)
 			pengumuman.PUT("/:id", admin.UpdatePengumuman)
-			pengumuman.DELETE("/:id", admin.DeletePengumuman)
-			pengumuman.DELETE("/:id/force", admin.ForceDeletePengumuman)
-			pengumuman.PUT("/:id/restore", admin.RestorePengumuman)
-			pengumuman.PUT("/:id/publish", admin.PublishPengumuman)
+			pengumuman.DELETE("/:id", adminOnly, admin.DeletePengumuman)
+			pengumuman.DELETE("/:id/force", adminOnly, admin.ForceDeletePengumuman)
+			pengumuman.PUT("/:id/restore", adminOnly, admin.RestorePengumuman)
+			pengumuman.PUT("/:id/publish", adminOnly, admin.PublishPengumuman)
 		}
 
 		agenda := protected.Group("/agenda")
@@ -151,13 +158,15 @@ func Register(r *gin.Engine) {
 			agenda.GET("/trash", admin.GetAgendaList)
 			agenda.GET("/:id", admin.GetAgenda)
 			agenda.PUT("/:id", admin.UpdateAgenda)
-			agenda.DELETE("/:id", admin.DeleteAgenda)
-			agenda.DELETE("/:id/force", admin.ForceDeleteAgenda)
-			agenda.PUT("/:id/restore", admin.RestoreAgenda)
-			agenda.PUT("/:id/publish", admin.PublishAgenda)
+			agenda.DELETE("/:id", adminOnly, admin.DeleteAgenda)
+			agenda.DELETE("/:id/force", adminOnly, admin.ForceDeleteAgenda)
+			agenda.PUT("/:id/restore", adminOnly, admin.RestoreAgenda)
+			agenda.PUT("/:id/publish", adminOnly, admin.PublishAgenda)
 		}
 
+		// kependudukan: admin only
 		kependudukan := protected.Group("/kependudukan")
+		kependudukan.Use(adminOnly)
 		{
 			kependudukan.GET("/penduduk", admin.GetStatistikPendudukList)
 			kependudukan.POST("/penduduk", admin.CreateStatistikPenduduk)
@@ -181,13 +190,13 @@ func Register(r *gin.Engine) {
 		kategoriWisata := protected.Group("/wisata/kategori")
 		{
 			kategoriWisata.GET("", admin.GetKategoriWisataList)
-			kategoriWisata.POST("", admin.CreateKategoriWisata)
+			kategoriWisata.POST("", adminOnly, admin.CreateKategoriWisata)
 			kategoriWisata.GET("/trash", admin.GetKategoriWisataList)
 			kategoriWisata.GET("/:id", admin.GetKategoriWisata)
-			kategoriWisata.PUT("/:id", admin.UpdateKategoriWisata)
-			kategoriWisata.DELETE("/:id", admin.DeleteKategoriWisata)
-			kategoriWisata.DELETE("/:id/force", admin.ForceDeleteKategoriWisata)
-			kategoriWisata.PUT("/:id/restore", admin.RestoreKategoriWisata)
+			kategoriWisata.PUT("/:id", adminOnly, admin.UpdateKategoriWisata)
+			kategoriWisata.DELETE("/:id", adminOnly, admin.DeleteKategoriWisata)
+			kategoriWisata.DELETE("/:id/force", adminOnly, admin.ForceDeleteKategoriWisata)
+			kategoriWisata.PUT("/:id/restore", adminOnly, admin.RestoreKategoriWisata)
 		}
 
 		wisata := protected.Group("/wisata")
@@ -197,25 +206,25 @@ func Register(r *gin.Engine) {
 			wisata.GET("/trash", admin.GetWisataList)
 			wisata.GET("/:id", admin.GetWisata)
 			wisata.PUT("/:id", admin.UpdateWisata)
-			wisata.DELETE("/:id", admin.DeleteWisata)
-			wisata.DELETE("/:id/force", admin.ForceDeleteWisata)
-			wisata.PUT("/:id/restore", admin.RestoreWisata)
-			wisata.PUT("/:id/publish", admin.PublishWisata)
+			wisata.DELETE("/:id", adminOnly, admin.DeleteWisata)
+			wisata.DELETE("/:id/force", adminOnly, admin.ForceDeleteWisata)
+			wisata.PUT("/:id/restore", adminOnly, admin.RestoreWisata)
+			wisata.PUT("/:id/publish", adminOnly, admin.PublishWisata)
 			wisata.POST("/:id/galeri", admin.AddWisataGaleri)
-			wisata.DELETE("/:id/galeri/:galeri_id", admin.DeleteWisataGaleri)
+			wisata.DELETE("/:id/galeri/:galeri_id", adminOnly, admin.DeleteWisataGaleri)
 			wisata.PUT("/:id/galeri/urutan", admin.UpdateUrutanWisataGaleri)
 		}
 
 		kategoriGaleri := protected.Group("/galeri/kategori")
 		{
 			kategoriGaleri.GET("", admin.GetKategoriGaleriList)
-			kategoriGaleri.POST("", admin.CreateKategoriGaleri)
+			kategoriGaleri.POST("", adminOnly, admin.CreateKategoriGaleri)
 			kategoriGaleri.GET("/trash", admin.GetKategoriGaleriList)
 			kategoriGaleri.GET("/:id", admin.GetKategoriGaleri)
-			kategoriGaleri.PUT("/:id", admin.UpdateKategoriGaleri)
-			kategoriGaleri.DELETE("/:id", admin.DeleteKategoriGaleri)
-			kategoriGaleri.DELETE("/:id/force", admin.ForceDeleteKategoriGaleri)
-			kategoriGaleri.PUT("/:id/restore", admin.RestoreKategoriGaleri)
+			kategoriGaleri.PUT("/:id", adminOnly, admin.UpdateKategoriGaleri)
+			kategoriGaleri.DELETE("/:id", adminOnly, admin.DeleteKategoriGaleri)
+			kategoriGaleri.DELETE("/:id/force", adminOnly, admin.ForceDeleteKategoriGaleri)
+			kategoriGaleri.PUT("/:id/restore", adminOnly, admin.RestoreKategoriGaleri)
 		}
 
 		galeri := protected.Group("/galeri")
@@ -225,22 +234,22 @@ func Register(r *gin.Engine) {
 			galeri.GET("/trash", admin.GetGaleriList)
 			galeri.GET("/:id", admin.GetGaleri)
 			galeri.PUT("/:id", admin.UpdateGaleri)
-			galeri.DELETE("/:id", admin.DeleteGaleri)
-			galeri.DELETE("/:id/force", admin.ForceDeleteGaleri)
-			galeri.PUT("/:id/restore", admin.RestoreGaleri)
-			galeri.PUT("/:id/publish", admin.PublishGaleri)
+			galeri.DELETE("/:id", adminOnly, admin.DeleteGaleri)
+			galeri.DELETE("/:id/force", adminOnly, admin.ForceDeleteGaleri)
+			galeri.PUT("/:id/restore", adminOnly, admin.RestoreGaleri)
+			galeri.PUT("/:id/publish", adminOnly, admin.PublishGaleri)
 		}
 
 		kategoriUMKM := protected.Group("/umkm/kategori")
 		{
 			kategoriUMKM.GET("", admin.GetKategoriUMKMList)
-			kategoriUMKM.POST("", admin.CreateKategoriUMKM)
+			kategoriUMKM.POST("", adminOnly, admin.CreateKategoriUMKM)
 			kategoriUMKM.GET("/trash", admin.GetKategoriUMKMList)
 			kategoriUMKM.GET("/:id", admin.GetKategoriUMKM)
-			kategoriUMKM.PUT("/:id", admin.UpdateKategoriUMKM)
-			kategoriUMKM.DELETE("/:id", admin.DeleteKategoriUMKM)
-			kategoriUMKM.DELETE("/:id/force", admin.ForceDeleteKategoriUMKM)
-			kategoriUMKM.PUT("/:id/restore", admin.RestoreKategoriUMKM)
+			kategoriUMKM.PUT("/:id", adminOnly, admin.UpdateKategoriUMKM)
+			kategoriUMKM.DELETE("/:id", adminOnly, admin.DeleteKategoriUMKM)
+			kategoriUMKM.DELETE("/:id/force", adminOnly, admin.ForceDeleteKategoriUMKM)
+			kategoriUMKM.PUT("/:id/restore", adminOnly, admin.RestoreKategoriUMKM)
 		}
 
 		umkm := protected.Group("/umkm")
@@ -250,17 +259,18 @@ func Register(r *gin.Engine) {
 			umkm.GET("/trash", admin.GetUMKMList)
 			umkm.GET("/:id", admin.GetUMKM)
 			umkm.PUT("/:id", admin.UpdateUMKM)
-			umkm.DELETE("/:id", admin.DeleteUMKM)
-			umkm.DELETE("/:id/force", admin.ForceDeleteUMKM)
-			umkm.PUT("/:id/restore", admin.RestoreUMKM)
-			umkm.PUT("/:id/publish", admin.PublishUMKM)
+			umkm.DELETE("/:id", adminOnly, admin.DeleteUMKM)
+			umkm.DELETE("/:id/force", adminOnly, admin.ForceDeleteUMKM)
+			umkm.PUT("/:id/restore", adminOnly, admin.RestoreUMKM)
+			umkm.PUT("/:id/publish", adminOnly, admin.PublishUMKM)
 			umkm.GET("/:id/produk", admin.GetProdukUMKMList)
 			umkm.POST("/:id/produk", admin.CreateProdukUMKM)
 			umkm.PUT("/:id/produk/:produk_id", admin.UpdateProdukUMKM)
-			umkm.DELETE("/:id/produk/:produk_id", admin.DeleteProdukUMKM)
+			umkm.DELETE("/:id/produk/:produk_id", adminOnly, admin.DeleteProdukUMKM)
 		}
 
 		jenisSurat := protected.Group("/surat/jenis")
+		jenisSurat.Use(adminOnly)
 		{
 			jenisSurat.GET("", admin.GetJenisSuratList)
 			jenisSurat.POST("", admin.CreateJenisSurat)
@@ -279,10 +289,12 @@ func Register(r *gin.Engine) {
 			surat.GET("/:id", admin.GetPengajuanSurat)
 			surat.PUT("/:id/proses", admin.ProsesSurat)
 			surat.PUT("/:id/selesai", admin.SelesaikanSurat)
-			surat.PUT("/:id/tolak", admin.TolakSurat)
+			surat.PUT("/:id/tolak", adminOnly, admin.TolakSurat)
 		}
 
+		// apbdes: admin only
 		apbdes := protected.Group("/apbdes")
+		apbdes.Use(adminOnly)
 		{
 			apbdes.GET("", admin.GetAPBDesList)
 			apbdes.POST("", admin.CreateAPBDes)
@@ -301,14 +313,15 @@ func Register(r *gin.Engine) {
 			pengaduan.GET("", admin.GetPengaduanList)
 			pengaduan.POST("", admin.BuatPengaduan)
 			pengaduan.GET("/:id", admin.GetPengaduan)
-			pengaduan.DELETE("/:id", admin.DeletePengaduan)
+			pengaduan.DELETE("/:id", adminOnly, admin.DeletePengaduan)
 			pengaduan.PUT("/:id/verifikasi", admin.VerifikasiPengaduan)
 			pengaduan.PUT("/:id/proses", admin.ProsesPengaduan)
 			pengaduan.PUT("/:id/selesai", admin.SelesaikanPengaduan)
-			pengaduan.PUT("/:id/tolak", admin.TolakPengaduan)
+			pengaduan.PUT("/:id/tolak", adminOnly, admin.TolakPengaduan)
 		}
 
 		kategoriRegulasi := protected.Group("/regulasi/kategori")
+		kategoriRegulasi.Use(adminOnly)
 		{
 			kategoriRegulasi.GET("", admin.GetKategoriRegulasiList)
 			kategoriRegulasi.POST("", admin.CreateKategoriRegulasi)
@@ -321,6 +334,7 @@ func Register(r *gin.Engine) {
 		}
 
 		regulasi := protected.Group("/regulasi")
+		regulasi.Use(adminOnly)
 		{
 			regulasi.GET("", admin.GetRegulasiList)
 			regulasi.POST("", admin.CreateRegulasi)
@@ -336,25 +350,36 @@ func Register(r *gin.Engine) {
 		peta := protected.Group("/peta")
 		{
 			peta.GET("", admin.GetPetaFasilitasList)
-			peta.POST("", admin.CreatePetaFasilitas)
+			peta.POST("", adminOnly, admin.CreatePetaFasilitas)
 			peta.GET("/:id", admin.GetPetaFasilitas)
-			peta.PUT("/:id", admin.UpdatePetaFasilitas)
-			peta.DELETE("/:id", admin.DeletePetaFasilitas)
-			peta.PUT("/:id/publish", admin.PublishPetaFasilitas)
+			peta.PUT("/:id", adminOnly, admin.UpdatePetaFasilitas)
+			peta.DELETE("/:id", adminOnly, admin.DeletePetaFasilitas)
+			peta.PUT("/:id/publish", adminOnly, admin.PublishPetaFasilitas)
 		}
 
 		faq := protected.Group("/faq")
 		{
 			faq.GET("", admin.GetFAQList)
-			faq.POST("", admin.CreateFAQ)
+			faq.POST("", adminOnly, admin.CreateFAQ)
 			faq.GET("/trash", admin.GetFAQList)
-			faq.PUT("/urutan", admin.UrutanFAQ)
+			faq.PUT("/urutan", adminOnly, admin.UrutanFAQ)
 			faq.GET("/:id", admin.GetFAQ)
-			faq.PUT("/:id", admin.UpdateFAQ)
-			faq.DELETE("/:id", admin.DeleteFAQ)
-			faq.DELETE("/:id/force", admin.ForceDeleteFAQ)
-			faq.PUT("/:id/restore", admin.RestoreFAQ)
-			faq.PUT("/:id/publish", admin.PublishFAQ)
+			faq.PUT("/:id", adminOnly, admin.UpdateFAQ)
+			faq.DELETE("/:id", adminOnly, admin.DeleteFAQ)
+			faq.DELETE("/:id/force", adminOnly, admin.ForceDeleteFAQ)
+			faq.PUT("/:id/restore", adminOnly, admin.RestoreFAQ)
+			faq.PUT("/:id/publish", adminOnly, admin.PublishFAQ)
 		}
+
+		// settings: admin only
+		settings := protected.Group("/settings")
+		settings.Use(adminOnly)
+		{
+			settings.GET("", admin.GetSettings)
+			settings.PUT("", admin.UpdateSettings)
+			settings.PUT("/:group", admin.UpdateSettingsByGroup)
+		}
+
+		protected.GET("/dashboard", admin.GetDashboard)
 	}
 }

@@ -1,4 +1,4 @@
-// Platform Desa — Structs Sistem (Peta, FAQ, Tema, Settings)
+// Platform Desa — Structs Sistem (Peta, FAQ, Settings)
 // Copyright (c) 2026 Syahril Haryono
 // Licensed under MIT License
 
@@ -21,10 +21,6 @@ type FAQRequest struct {
 	Kategori    *string `json:"kategori"`
 	Urutan      uint    `json:"urutan"`
 	IsPublished bool    `json:"is_published"`
-}
-
-type InstallTemaRequest struct {
-	RepoURL string `json:"repo_url" binding:"required,url"`
 }
 
 type SettingsRequest struct {
