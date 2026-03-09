@@ -95,6 +95,8 @@ func CreatePengumuman(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "pengumuman", "Menambah pengumuman: "+req.Judul)
+
 	if req.Status == "published" {
 		go helpers.RevalidatePaths("/pengumuman", "/pengumuman/"+pengumuman.Slug)
 	}
@@ -144,6 +146,8 @@ func UpdatePengumuman(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "pengumuman", "Memperbarui pengumuman: "+req.Judul)
+
 	go helpers.RevalidatePaths("/pengumuman", "/pengumuman/"+pengumuman.Slug)
 
 	database.DB.Preload("File").Preload("Penulis").First(&pengumuman, pengumuman.ID)
@@ -164,6 +168,8 @@ func DeletePengumuman(c *gin.Context) {
 	}
 
 	database.DB.Model(&pengumuman).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "pengumuman", "Menghapus pengumuman: "+pengumuman.Judul)
 
 	go helpers.RevalidatePath("/pengumuman")
 
@@ -192,6 +198,9 @@ func ForceDeletePengumuman(c *gin.Context) {
 	}
 
 	database.DB.Delete(&pengumuman)
+
+	helpers.Log(c, "force_delete", "pengumuman", "Menghapus permanen pengumuman: "+pengumuman.Judul)
+
 	helpers.OK(c, "Pengumuman berhasil dihapus permanen", nil)
 }
 
@@ -209,6 +218,9 @@ func RestorePengumuman(c *gin.Context) {
 	}
 
 	database.DB.Model(&pengumuman).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "pengumuman", "Memulihkan pengumuman: "+pengumuman.Judul)
+
 	helpers.OK(c, "Pengumuman berhasil dipulihkan", nil)
 }
 
@@ -227,6 +239,7 @@ func PublishPengumuman(c *gin.Context) {
 
 	if pengumuman.Status == "published" {
 		database.DB.Model(&pengumuman).Update("status", "draft")
+		helpers.Log(c, "unpublish", "pengumuman", "Menyembunyikan pengumuman: "+pengumuman.Judul)
 		go helpers.RevalidatePaths("/pengumuman", "/pengumuman/"+pengumuman.Slug)
 		helpers.OK(c, "Pengumuman berhasil di-unpublish", gin.H{"status": "draft"})
 		return
@@ -237,6 +250,8 @@ func PublishPengumuman(c *gin.Context) {
 		"status":       "published",
 		"published_at": now,
 	})
+
+	helpers.Log(c, "publish", "pengumuman", "Mempublikasikan pengumuman: "+pengumuman.Judul)
 
 	go helpers.RevalidatePaths("/pengumuman", "/pengumuman/"+pengumuman.Slug)
 	helpers.OK(c, "Pengumuman berhasil dipublikasikan", gin.H{"status": "published"})
@@ -310,6 +325,8 @@ func CreateAgenda(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "pengumuman", "Menambah agenda: "+req.Judul)
+
 	if req.IsPublished {
 		go helpers.RevalidatePaths("/agenda", "/agenda/"+agenda.Slug)
 	}
@@ -354,6 +371,8 @@ func UpdateAgenda(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "pengumuman", "Memperbarui agenda: "+req.Judul)
+
 	go helpers.RevalidatePaths("/agenda", "/agenda/"+agenda.Slug)
 
 	helpers.OK(c, "Agenda berhasil diperbarui", agenda)
@@ -374,6 +393,8 @@ func DeleteAgenda(c *gin.Context) {
 
 	database.DB.Model(&agenda).Update("is_deleted", true)
 
+	helpers.Log(c, "delete", "pengumuman", "Menghapus agenda: "+agenda.Judul)
+
 	go helpers.RevalidatePath("/agenda")
 
 	helpers.OK(c, "Agenda berhasil dihapus", nil)
@@ -393,6 +414,9 @@ func ForceDeleteAgenda(c *gin.Context) {
 	}
 
 	database.DB.Delete(&agenda)
+
+	helpers.Log(c, "force_delete", "pengumuman", "Menghapus permanen agenda: "+agenda.Judul)
+
 	helpers.OK(c, "Agenda berhasil dihapus permanen", nil)
 }
 
@@ -410,6 +434,9 @@ func RestoreAgenda(c *gin.Context) {
 	}
 
 	database.DB.Model(&agenda).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "pengumuman", "Memulihkan agenda: "+agenda.Judul)
+
 	helpers.OK(c, "Agenda berhasil dipulihkan", nil)
 }
 
@@ -435,5 +462,8 @@ func PublishAgenda(c *gin.Context) {
 	if !newStatus {
 		msg = "Agenda berhasil disembunyikan"
 	}
+
+	helpers.Log(c, "publish", "pengumuman", msg+": "+agenda.Judul)
+
 	helpers.OK(c, msg, gin.H{"is_published": newStatus})
 }

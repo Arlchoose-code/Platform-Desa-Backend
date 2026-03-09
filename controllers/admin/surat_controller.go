@@ -83,6 +83,8 @@ func CreateJenisSurat(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "surat", "Menambah jenis surat: "+req.Nama)
+
 	database.DB.Preload("TemplateFile").First(&jenis, jenis.ID)
 	helpers.Created(c, "Jenis surat berhasil ditambahkan", jenis)
 }
@@ -125,6 +127,8 @@ func UpdateJenisSurat(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "surat", "Memperbarui jenis surat: "+req.Nama)
+
 	database.DB.Preload("TemplateFile").First(&jenis, jenis.ID)
 	helpers.OK(c, "Jenis surat berhasil diperbarui", jenis)
 }
@@ -143,6 +147,9 @@ func DeleteJenisSurat(c *gin.Context) {
 	}
 
 	database.DB.Model(&jenis).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "surat", "Menghapus jenis surat: "+jenis.Nama)
+
 	helpers.OK(c, "Jenis surat berhasil dihapus", nil)
 }
 
@@ -168,6 +175,9 @@ func ForceDeleteJenisSurat(c *gin.Context) {
 	}
 
 	database.DB.Delete(&jenis)
+
+	helpers.Log(c, "force_delete", "surat", "Menghapus permanen jenis surat: "+jenis.Nama)
+
 	helpers.OK(c, "Jenis surat berhasil dihapus permanen", nil)
 }
 
@@ -185,6 +195,9 @@ func RestoreJenisSurat(c *gin.Context) {
 	}
 
 	database.DB.Model(&jenis).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "surat", "Memulihkan jenis surat: "+jenis.Nama)
+
 	helpers.OK(c, "Jenis surat berhasil dipulihkan", nil)
 }
 
@@ -315,6 +328,8 @@ func ProsesSurat(c *gin.Context) {
 		Oleh:        &userID,
 	})
 
+	helpers.Log(c, "update", "surat", "Memproses surat: "+pengajuan.NomorPengajuan)
+
 	helpers.OK(c, "Pengajuan sedang diproses", nil)
 }
 
@@ -359,6 +374,8 @@ func SelesaikanSurat(c *gin.Context) {
 		Oleh:        &userID,
 	})
 
+	helpers.Log(c, "update", "surat", "Menyelesaikan surat: "+pengajuan.NomorPengajuan)
+
 	helpers.OK(c, "Pengajuan berhasil diselesaikan", nil)
 }
 
@@ -399,6 +416,8 @@ func TolakSurat(c *gin.Context) {
 		Catatan:     &req.Alasan,
 		Oleh:        &userID,
 	})
+
+	helpers.Log(c, "update", "surat", "Menolak surat: "+pengajuan.NomorPengajuan)
 
 	helpers.OK(c, "Pengajuan berhasil ditolak", nil)
 }

@@ -74,6 +74,8 @@ func CreateFAQ(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "faq", "Menambah FAQ: "+req.Pertanyaan)
+
 	if req.IsPublished {
 		go helpers.RevalidatePath("/faq")
 	}
@@ -111,6 +113,8 @@ func UpdateFAQ(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "faq", "Memperbarui FAQ: "+req.Pertanyaan)
+
 	go helpers.RevalidatePath("/faq")
 
 	helpers.OK(c, "FAQ berhasil diperbarui", data)
@@ -131,6 +135,8 @@ func DeleteFAQ(c *gin.Context) {
 
 	database.DB.Model(&data).Update("is_deleted", true)
 
+	helpers.Log(c, "delete", "faq", "Menghapus FAQ: "+data.Pertanyaan)
+
 	go helpers.RevalidatePath("/faq")
 
 	helpers.OK(c, "FAQ berhasil dihapus", nil)
@@ -150,6 +156,9 @@ func ForceDeleteFAQ(c *gin.Context) {
 	}
 
 	database.DB.Delete(&data)
+
+	helpers.Log(c, "force_delete", "faq", "Menghapus permanen FAQ: "+data.Pertanyaan)
+
 	helpers.OK(c, "FAQ berhasil dihapus permanen", nil)
 }
 
@@ -167,6 +176,9 @@ func RestoreFAQ(c *gin.Context) {
 	}
 
 	database.DB.Model(&data).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "faq", "Memulihkan FAQ: "+data.Pertanyaan)
+
 	helpers.OK(c, "FAQ berhasil dipulihkan", nil)
 }
 
@@ -192,6 +204,9 @@ func PublishFAQ(c *gin.Context) {
 	if !newStatus {
 		msg = "FAQ berhasil disembunyikan"
 	}
+
+	helpers.Log(c, "publish", "faq", msg+": "+data.Pertanyaan)
+
 	helpers.OK(c, msg, gin.H{"is_published": newStatus})
 }
 

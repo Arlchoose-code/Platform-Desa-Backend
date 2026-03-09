@@ -89,11 +89,7 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetUint("user_id")
-	desc := "Membuat user baru: " + user.Email
-	database.DB.Create(&models.ActivityLog{
-		UserID: &userID, Action: "create", Module: "user", Description: &desc,
-	})
+	helpers.Log(c, "create", "user", "Membuat user baru: "+user.Email)
 
 	helpers.Created(c, "User berhasil dibuat", user)
 }
@@ -136,11 +132,7 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetUint("user_id")
-	desc := "Memperbarui user: " + user.Email
-	database.DB.Create(&models.ActivityLog{
-		UserID: &userID, Action: "update", Module: "user", Description: &desc,
-	})
+	helpers.Log(c, "update", "user", "Memperbarui user: "+user.Email)
 
 	helpers.OK(c, "User berhasil diperbarui", user)
 }
@@ -176,11 +168,7 @@ func UpdateAvatar(c *gin.Context) {
 
 	database.DB.Model(&user).Update("avatar", result.Path)
 
-	userID := c.GetUint("user_id")
-	desc := "Update avatar user: " + user.Email
-	database.DB.Create(&models.ActivityLog{
-		UserID: &userID, Action: "update_avatar", Module: "user", Description: &desc,
-	})
+	helpers.Log(c, "update", "user", "Update avatar user: "+user.Email)
 
 	helpers.OK(c, "Avatar berhasil diperbarui", gin.H{"avatar": result.Path})
 }
@@ -238,11 +226,7 @@ func ResetPassword(c *gin.Context) {
 
 	database.DB.Model(&user).Update("password", string(hashed))
 
-	userID := c.GetUint("user_id")
-	desc := "Reset password user: " + user.Email
-	database.DB.Create(&models.ActivityLog{
-		UserID: &userID, Action: "reset_password", Module: "user", Description: &desc,
-	})
+	helpers.Log(c, "update", "user", "Reset password user: "+user.Email)
 
 	helpers.OK(c, "Password berhasil direset", nil)
 }
@@ -274,11 +258,7 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetUint("user_id")
-	desc := "Menghapus user: " + user.Email
-	database.DB.Create(&models.ActivityLog{
-		UserID: &userID, Action: "delete", Module: "user", Description: &desc,
-	})
+	helpers.Log(c, "delete", "user", "Menghapus user: "+user.Email)
 
 	helpers.OK(c, "User berhasil dihapus", nil)
 }

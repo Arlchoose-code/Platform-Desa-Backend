@@ -118,6 +118,8 @@ func VerifikasiPengaduan(c *gin.Context) {
 		"ditangani_oleh": userID,
 	})
 
+	helpers.Log(c, "update", "pengaduan", "Memverifikasi pengaduan: "+data.NomorTiket)
+
 	helpers.OK(c, "Pengaduan berhasil diverifikasi", nil)
 }
 
@@ -144,6 +146,8 @@ func ProsesPengaduan(c *gin.Context) {
 		"status":         "diproses",
 		"ditangani_oleh": userID,
 	})
+
+	helpers.Log(c, "update", "pengaduan", "Memproses pengaduan: "+data.NomorTiket)
 
 	helpers.OK(c, "Pengaduan sedang diproses", nil)
 }
@@ -177,6 +181,8 @@ func SelesaikanPengaduan(c *gin.Context) {
 		"respon_admin": req.Respon,
 	})
 
+	helpers.Log(c, "update", "pengaduan", "Menyelesaikan pengaduan: "+data.NomorTiket)
+
 	helpers.OK(c, "Pengaduan berhasil diselesaikan", nil)
 }
 
@@ -209,6 +215,8 @@ func TolakPengaduan(c *gin.Context) {
 		"respon_admin": req.Alasan,
 	})
 
+	helpers.Log(c, "update", "pengaduan", "Menolak pengaduan: "+data.NomorTiket)
+
 	helpers.OK(c, "Pengaduan berhasil ditolak", nil)
 }
 
@@ -234,5 +242,8 @@ func DeletePengaduan(c *gin.Context) {
 	}
 
 	database.DB.Delete(&data)
+
+	helpers.Log(c, "delete", "pengaduan", "Menghapus pengaduan: "+data.NomorTiket)
+
 	helpers.OK(c, "Pengaduan berhasil dihapus", nil)
 }

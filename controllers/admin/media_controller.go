@@ -89,6 +89,8 @@ func UploadMedia(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "media", "Mengupload media: "+result.OriginalName)
+
 	helpers.Created(c, "Media berhasil diupload", media)
 }
 
@@ -246,6 +248,8 @@ func DeleteMedia(c *gin.Context) {
 		helpers.InternalError(c, "Gagal menghapus media")
 		return
 	}
+
+	helpers.Log(c, "delete", "media", "Menghapus media: "+media.OriginalName)
 
 	helpers.OK(c, "Media berhasil dihapus", nil)
 }

@@ -55,6 +55,8 @@ func UpdateSettings(c *gin.Context) {
 		}
 	}
 
+	helpers.Log(c, "update", "settings", "Memperbarui settings")
+
 	go helpers.RevalidatePath("/")
 
 	helpers.OK(c, "Settings berhasil diperbarui", nil)
@@ -82,6 +84,8 @@ func UpdateSettingsByGroup(c *gin.Context) {
 			})
 		}
 	}
+
+	helpers.Log(c, "update", "settings", "Memperbarui settings group: "+group)
 
 	go helpers.RevalidatePath("/")
 

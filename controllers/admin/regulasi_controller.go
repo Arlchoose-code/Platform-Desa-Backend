@@ -68,6 +68,8 @@ func CreateKategoriRegulasi(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "regulasi", "Menambah kategori regulasi: "+req.Nama)
+
 	helpers.Created(c, "Kategori berhasil ditambahkan", kategori)
 }
 
@@ -106,6 +108,8 @@ func UpdateKategoriRegulasi(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "regulasi", "Memperbarui kategori regulasi: "+req.Nama)
+
 	helpers.OK(c, "Kategori berhasil diperbarui", kategori)
 }
 
@@ -130,6 +134,9 @@ func DeleteKategoriRegulasi(c *gin.Context) {
 	}
 
 	database.DB.Model(&kategori).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "regulasi", "Menghapus kategori regulasi: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dihapus", nil)
 }
 
@@ -152,6 +159,9 @@ func ForceDeleteKategoriRegulasi(c *gin.Context) {
 	})
 
 	database.DB.Delete(&kategori)
+
+	helpers.Log(c, "force_delete", "regulasi", "Menghapus permanen kategori regulasi: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dihapus permanen", nil)
 }
 
@@ -169,6 +179,9 @@ func RestoreKategoriRegulasi(c *gin.Context) {
 	}
 
 	database.DB.Model(&kategori).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "regulasi", "Memulihkan kategori regulasi: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dipulihkan", nil)
 }
 
@@ -256,6 +269,8 @@ func CreateRegulasi(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "regulasi", "Menambah regulasi: "+req.Judul)
+
 	if req.IsPublished {
 		go helpers.RevalidatePaths("/regulasi", "/regulasi/"+regulasi.Slug)
 	}
@@ -311,6 +326,8 @@ func UpdateRegulasi(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "regulasi", "Memperbarui regulasi: "+req.Judul)
+
 	go helpers.RevalidatePaths("/regulasi", "/regulasi/"+regulasi.Slug)
 
 	database.DB.Preload("Kategori").Preload("File").First(&regulasi, regulasi.ID)
@@ -331,6 +348,8 @@ func DeleteRegulasi(c *gin.Context) {
 	}
 
 	database.DB.Model(&regulasi).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "regulasi", "Menghapus regulasi: "+regulasi.Judul)
 
 	go helpers.RevalidatePath("/regulasi")
 
@@ -359,6 +378,9 @@ func ForceDeleteRegulasi(c *gin.Context) {
 	}
 
 	database.DB.Delete(&regulasi)
+
+	helpers.Log(c, "force_delete", "regulasi", "Menghapus permanen regulasi: "+regulasi.Judul)
+
 	helpers.OK(c, "Regulasi berhasil dihapus permanen", nil)
 }
 
@@ -376,6 +398,9 @@ func RestoreRegulasi(c *gin.Context) {
 	}
 
 	database.DB.Model(&regulasi).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "regulasi", "Memulihkan regulasi: "+regulasi.Judul)
+
 	helpers.OK(c, "Regulasi berhasil dipulihkan", nil)
 }
 
@@ -401,5 +426,8 @@ func PublishRegulasi(c *gin.Context) {
 	if !newStatus {
 		msg = "Regulasi berhasil disembunyikan"
 	}
+
+	helpers.Log(c, "publish", "regulasi", msg+": "+regulasi.Judul)
+
 	helpers.OK(c, msg, gin.H{"is_published": newStatus})
 }

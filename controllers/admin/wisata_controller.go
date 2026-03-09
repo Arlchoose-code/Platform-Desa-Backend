@@ -70,6 +70,8 @@ func CreateKategoriWisata(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "wisata", "Menambah kategori wisata: "+req.Nama)
+
 	helpers.Created(c, "Kategori berhasil ditambahkan", kategori)
 }
 
@@ -109,6 +111,8 @@ func UpdateKategoriWisata(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "wisata", "Memperbarui kategori wisata: "+req.Nama)
+
 	helpers.OK(c, "Kategori berhasil diperbarui", kategori)
 }
 
@@ -133,6 +137,9 @@ func DeleteKategoriWisata(c *gin.Context) {
 	}
 
 	database.DB.Model(&kategori).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "wisata", "Menghapus kategori wisata: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dihapus", nil)
 }
 
@@ -155,6 +162,9 @@ func ForceDeleteKategoriWisata(c *gin.Context) {
 	})
 
 	database.DB.Delete(&kategori)
+
+	helpers.Log(c, "force_delete", "wisata", "Menghapus permanen kategori wisata: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dihapus permanen", nil)
 }
 
@@ -172,6 +182,9 @@ func RestoreKategoriWisata(c *gin.Context) {
 	}
 
 	database.DB.Model(&kategori).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "wisata", "Memulihkan kategori wisata: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dipulihkan", nil)
 }
 
@@ -260,6 +273,8 @@ func CreateWisata(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "wisata", "Menambah wisata: "+req.Nama)
+
 	if req.IsPublished {
 		go helpers.RevalidatePaths("/wisata", "/wisata/"+wisata.Slug)
 	}
@@ -320,6 +335,8 @@ func UpdateWisata(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "wisata", "Memperbarui wisata: "+req.Nama)
+
 	go helpers.RevalidatePaths("/wisata", "/wisata/"+wisata.Slug)
 
 	database.DB.Preload("Kategori").Preload("Thumbnail").First(&wisata, wisata.ID)
@@ -340,6 +357,8 @@ func DeleteWisata(c *gin.Context) {
 	}
 
 	database.DB.Model(&wisata).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "wisata", "Menghapus wisata: "+wisata.Nama)
 
 	go helpers.RevalidatePath("/wisata")
 
@@ -378,6 +397,9 @@ func ForceDeleteWisata(c *gin.Context) {
 	}
 
 	database.DB.Delete(&wisata)
+
+	helpers.Log(c, "force_delete", "wisata", "Menghapus permanen wisata: "+wisata.Nama)
+
 	helpers.OK(c, "Wisata berhasil dihapus permanen", nil)
 }
 
@@ -395,6 +417,9 @@ func RestoreWisata(c *gin.Context) {
 	}
 
 	database.DB.Model(&wisata).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "wisata", "Memulihkan wisata: "+wisata.Nama)
+
 	helpers.OK(c, "Wisata berhasil dipulihkan", nil)
 }
 
@@ -420,6 +445,9 @@ func PublishWisata(c *gin.Context) {
 	if !newStatus {
 		msg = "Wisata berhasil disembunyikan"
 	}
+
+	helpers.Log(c, "publish", "wisata", msg+": "+wisata.Nama)
+
 	helpers.OK(c, msg, gin.H{"is_published": newStatus})
 }
 

@@ -74,6 +74,8 @@ func CreateKategoriGaleri(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "galeri", "Menambah kategori galeri: "+req.Nama)
+
 	helpers.Created(c, "Kategori berhasil ditambahkan", kategori)
 }
 
@@ -113,6 +115,8 @@ func UpdateKategoriGaleri(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "galeri", "Memperbarui kategori galeri: "+req.Nama)
+
 	helpers.OK(c, "Kategori berhasil diperbarui", kategori)
 }
 
@@ -137,6 +141,9 @@ func DeleteKategoriGaleri(c *gin.Context) {
 	}
 
 	database.DB.Model(&kategori).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "galeri", "Menghapus kategori galeri: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dihapus", nil)
 }
 
@@ -159,6 +166,9 @@ func ForceDeleteKategoriGaleri(c *gin.Context) {
 	})
 
 	database.DB.Delete(&kategori)
+
+	helpers.Log(c, "force_delete", "galeri", "Menghapus permanen kategori galeri: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dihapus permanen", nil)
 }
 
@@ -176,6 +186,9 @@ func RestoreKategoriGaleri(c *gin.Context) {
 	}
 
 	database.DB.Model(&kategori).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "galeri", "Memulihkan kategori galeri: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dipulihkan", nil)
 }
 
@@ -260,6 +273,8 @@ func CreateGaleri(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "galeri", "Menambah galeri: "+req.Judul)
+
 	if req.IsPublished {
 		go helpers.RevalidatePath("/galeri")
 	}
@@ -312,6 +327,8 @@ func UpdateGaleri(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "galeri", "Memperbarui galeri: "+req.Judul)
+
 	go helpers.RevalidatePath("/galeri")
 
 	database.DB.Preload("Kategori").Preload("Media").Preload("Thumbnail").First(&galeri, galeri.ID)
@@ -332,6 +349,8 @@ func DeleteGaleri(c *gin.Context) {
 	}
 
 	database.DB.Model(&galeri).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "galeri", "Menghapus galeri: "+galeri.Judul)
 
 	go helpers.RevalidatePath("/galeri")
 
@@ -366,6 +385,9 @@ func ForceDeleteGaleri(c *gin.Context) {
 	}
 
 	database.DB.Delete(&galeri)
+
+	helpers.Log(c, "force_delete", "galeri", "Menghapus permanen galeri: "+galeri.Judul)
+
 	helpers.OK(c, "Galeri berhasil dihapus permanen", nil)
 }
 
@@ -383,6 +405,9 @@ func RestoreGaleri(c *gin.Context) {
 	}
 
 	database.DB.Model(&galeri).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "galeri", "Memulihkan galeri: "+galeri.Judul)
+
 	helpers.OK(c, "Galeri berhasil dipulihkan", nil)
 }
 
@@ -408,5 +433,8 @@ func PublishGaleri(c *gin.Context) {
 	if !newStatus {
 		msg = "Galeri berhasil disembunyikan"
 	}
+
+	helpers.Log(c, "publish", "galeri", msg+": "+galeri.Judul)
+
 	helpers.OK(c, msg, gin.H{"is_published": newStatus})
 }

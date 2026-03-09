@@ -76,6 +76,8 @@ func CreateStatistikPenduduk(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "kependudukan", "Menambah statistik penduduk: "+strconv.Itoa(req.Tahun)+"/"+strconv.Itoa(req.Bulan))
+
 	go helpers.RevalidatePath("/kependudukan")
 
 	helpers.Created(c, "Data berhasil ditambahkan", data)
@@ -122,6 +124,8 @@ func UpdateStatistikPenduduk(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "kependudukan", "Memperbarui statistik penduduk: "+strconv.Itoa(req.Tahun)+"/"+strconv.Itoa(req.Bulan))
+
 	go helpers.RevalidatePath("/kependudukan")
 
 	helpers.OK(c, "Data berhasil diperbarui", data)
@@ -141,6 +145,8 @@ func DeleteStatistikPenduduk(c *gin.Context) {
 	}
 
 	database.DB.Delete(&data)
+
+	helpers.Log(c, "delete", "kependudukan", "Menghapus statistik penduduk: "+strconv.Itoa(data.Tahun)+"/"+strconv.Itoa(data.Bulan))
 
 	go helpers.RevalidatePath("/kependudukan")
 
@@ -199,6 +205,8 @@ func CreateStatistikPendidikan(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "kependudukan", "Menambah statistik pendidikan: "+strconv.Itoa(req.Tahun))
+
 	go helpers.RevalidatePath("/kependudukan")
 
 	helpers.Created(c, "Data berhasil ditambahkan", data)
@@ -243,6 +251,8 @@ func UpdateStatistikPendidikan(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "kependudukan", "Memperbarui statistik pendidikan: "+strconv.Itoa(req.Tahun))
+
 	go helpers.RevalidatePath("/kependudukan")
 
 	helpers.OK(c, "Data berhasil diperbarui", data)
@@ -262,6 +272,8 @@ func DeleteStatistikPendidikan(c *gin.Context) {
 	}
 
 	database.DB.Delete(&data)
+
+	helpers.Log(c, "delete", "kependudukan", "Menghapus statistik pendidikan: "+strconv.Itoa(data.Tahun))
 
 	go helpers.RevalidatePath("/kependudukan")
 
@@ -320,6 +332,8 @@ func CreateStatistikPekerjaan(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "kependudukan", "Menambah statistik pekerjaan: "+strconv.Itoa(req.Tahun))
+
 	go helpers.RevalidatePath("/kependudukan")
 
 	helpers.Created(c, "Data berhasil ditambahkan", data)
@@ -364,6 +378,8 @@ func UpdateStatistikPekerjaan(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "kependudukan", "Memperbarui statistik pekerjaan: "+strconv.Itoa(req.Tahun))
+
 	go helpers.RevalidatePath("/kependudukan")
 
 	helpers.OK(c, "Data berhasil diperbarui", data)
@@ -383,6 +399,8 @@ func DeleteStatistikPekerjaan(c *gin.Context) {
 	}
 
 	database.DB.Delete(&data)
+
+	helpers.Log(c, "delete", "kependudukan", "Menghapus statistik pekerjaan: "+strconv.Itoa(data.Tahun))
 
 	go helpers.RevalidatePath("/kependudukan")
 

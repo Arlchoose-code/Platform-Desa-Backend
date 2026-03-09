@@ -69,6 +69,8 @@ func CreateKategoriUMKM(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "umkm", "Menambah kategori UMKM: "+req.Nama)
+
 	helpers.Created(c, "Kategori berhasil ditambahkan", kategori)
 }
 
@@ -107,6 +109,8 @@ func UpdateKategoriUMKM(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "umkm", "Memperbarui kategori UMKM: "+req.Nama)
+
 	helpers.OK(c, "Kategori berhasil diperbarui", kategori)
 }
 
@@ -131,6 +135,9 @@ func DeleteKategoriUMKM(c *gin.Context) {
 	}
 
 	database.DB.Model(&kategori).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "umkm", "Menghapus kategori UMKM: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dihapus", nil)
 }
 
@@ -153,6 +160,9 @@ func ForceDeleteKategoriUMKM(c *gin.Context) {
 	})
 
 	database.DB.Delete(&kategori)
+
+	helpers.Log(c, "force_delete", "umkm", "Menghapus permanen kategori UMKM: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dihapus permanen", nil)
 }
 
@@ -170,6 +180,9 @@ func RestoreKategoriUMKM(c *gin.Context) {
 	}
 
 	database.DB.Model(&kategori).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "umkm", "Memulihkan kategori UMKM: "+kategori.Nama)
+
 	helpers.OK(c, "Kategori berhasil dipulihkan", nil)
 }
 
@@ -256,6 +269,8 @@ func CreateUMKM(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "umkm", "Menambah UMKM: "+req.NamaUsaha)
+
 	if req.IsPublished {
 		go helpers.RevalidatePaths("/umkm", "/umkm/"+umkm.Slug)
 	}
@@ -314,6 +329,8 @@ func UpdateUMKM(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "umkm", "Memperbarui UMKM: "+req.NamaUsaha)
+
 	go helpers.RevalidatePaths("/umkm", "/umkm/"+umkm.Slug)
 
 	database.DB.Preload("Kategori").Preload("Foto").First(&umkm, umkm.ID)
@@ -334,6 +351,8 @@ func DeleteUMKM(c *gin.Context) {
 	}
 
 	database.DB.Model(&umkm).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "umkm", "Menghapus UMKM: "+umkm.NamaUsaha)
 
 	go helpers.RevalidatePath("/umkm")
 
@@ -372,6 +391,9 @@ func ForceDeleteUMKM(c *gin.Context) {
 	}
 
 	database.DB.Delete(&umkm)
+
+	helpers.Log(c, "force_delete", "umkm", "Menghapus permanen UMKM: "+umkm.NamaUsaha)
+
 	helpers.OK(c, "UMKM berhasil dihapus permanen", nil)
 }
 
@@ -389,6 +411,9 @@ func RestoreUMKM(c *gin.Context) {
 	}
 
 	database.DB.Model(&umkm).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "umkm", "Memulihkan UMKM: "+umkm.NamaUsaha)
+
 	helpers.OK(c, "UMKM berhasil dipulihkan", nil)
 }
 
@@ -414,6 +439,9 @@ func PublishUMKM(c *gin.Context) {
 	if !newStatus {
 		msg = "UMKM berhasil disembunyikan"
 	}
+
+	helpers.Log(c, "publish", "umkm", msg+": "+umkm.NamaUsaha)
+
 	helpers.OK(c, msg, gin.H{"is_published": newStatus})
 }
 
@@ -469,6 +497,8 @@ func CreateProdukUMKM(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "umkm", "Menambah produk UMKM: "+req.Nama)
+
 	go helpers.RevalidatePaths("/umkm", "/umkm/"+umkm.Slug)
 
 	database.DB.Preload("Foto").First(&produk, produk.ID)
@@ -511,6 +541,8 @@ func UpdateProdukUMKM(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "umkm", "Memperbarui produk UMKM: "+req.Nama)
+
 	var umkm models.UMKM
 	if err := database.DB.First(&umkm, umkmID).Error; err == nil {
 		go helpers.RevalidatePaths("/umkm", "/umkm/"+umkm.Slug)
@@ -545,6 +577,8 @@ func DeleteProdukUMKM(c *gin.Context) {
 	}
 
 	database.DB.Delete(&produk)
+
+	helpers.Log(c, "delete", "umkm", "Menghapus produk UMKM: "+produk.Nama)
 
 	var umkm models.UMKM
 	if err := database.DB.First(&umkm, umkmID).Error; err == nil {

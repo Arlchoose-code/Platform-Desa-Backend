@@ -68,6 +68,8 @@ func UpdateProfilDesa(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "profil", "Memperbarui profil desa: "+req.NamaDesa)
+
 	go helpers.RevalidatePaths("/", "/profil")
 
 	database.DB.Preload("Logo").Preload("FotoDesa").First(&profil)
@@ -139,6 +141,8 @@ func CreatePotensi(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "profil", "Menambah potensi desa: "+req.Judul)
+
 	go helpers.RevalidatePath("/potensi")
 
 	database.DB.Preload("Foto").First(&potensi, potensi.ID)
@@ -176,6 +180,8 @@ func UpdatePotensi(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "profil", "Memperbarui potensi desa: "+req.Judul)
+
 	go helpers.RevalidatePath("/potensi")
 
 	database.DB.Preload("Foto").First(&potensi, potensi.ID)
@@ -196,6 +202,8 @@ func DeletePotensi(c *gin.Context) {
 	}
 
 	database.DB.Model(&potensi).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "profil", "Menghapus potensi desa: "+potensi.Judul)
 
 	go helpers.RevalidatePath("/potensi")
 
@@ -224,6 +232,9 @@ func ForceDeletePotensi(c *gin.Context) {
 	}
 
 	database.DB.Delete(&potensi)
+
+	helpers.Log(c, "force_delete", "profil", "Menghapus permanen potensi desa: "+potensi.Judul)
+
 	helpers.OK(c, "Potensi desa berhasil dihapus permanen", nil)
 }
 
@@ -241,6 +252,9 @@ func RestorePotensi(c *gin.Context) {
 	}
 
 	database.DB.Model(&potensi).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "profil", "Memulihkan potensi desa: "+potensi.Judul)
+
 	helpers.OK(c, "Potensi desa berhasil dipulihkan", nil)
 }
 
@@ -266,5 +280,8 @@ func PublishPotensi(c *gin.Context) {
 	if !newStatus {
 		msg = "Potensi desa berhasil disembunyikan"
 	}
+
+	helpers.Log(c, "publish", "profil", msg+": "+potensi.Judul)
+
 	helpers.OK(c, msg, gin.H{"is_published": newStatus})
 }

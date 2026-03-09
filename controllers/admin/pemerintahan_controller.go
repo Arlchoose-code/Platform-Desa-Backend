@@ -75,6 +75,8 @@ func CreateJabatan(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "pemerintahan", "Menambah jabatan: "+req.Nama)
+
 	database.DB.Preload("Parent").First(&jabatan, jabatan.ID)
 	helpers.Created(c, "Jabatan berhasil ditambahkan", jabatan)
 }
@@ -114,6 +116,8 @@ func UpdateJabatan(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "pemerintahan", "Memperbarui jabatan: "+req.Nama)
+
 	database.DB.Preload("Parent").First(&jabatan, jabatan.ID)
 	helpers.OK(c, "Jabatan berhasil diperbarui", jabatan)
 }
@@ -139,6 +143,9 @@ func DeleteJabatan(c *gin.Context) {
 	}
 
 	database.DB.Model(&jabatan).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "pemerintahan", "Menghapus jabatan: "+jabatan.Nama)
+
 	helpers.OK(c, "Jabatan berhasil dihapus", nil)
 }
 
@@ -156,6 +163,9 @@ func ForceDeleteJabatan(c *gin.Context) {
 	}
 
 	database.DB.Delete(&jabatan)
+
+	helpers.Log(c, "force_delete", "pemerintahan", "Menghapus permanen jabatan: "+jabatan.Nama)
+
 	helpers.OK(c, "Jabatan berhasil dihapus permanen", nil)
 }
 
@@ -173,6 +183,9 @@ func RestoreJabatan(c *gin.Context) {
 	}
 
 	database.DB.Model(&jabatan).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "pemerintahan", "Memulihkan jabatan: "+jabatan.Nama)
+
 	helpers.OK(c, "Jabatan berhasil dipulihkan", nil)
 }
 
@@ -270,6 +283,8 @@ func CreatePejabat(c *gin.Context) {
 		}
 	}
 
+	helpers.Log(c, "create", "pemerintahan", "Menambah pejabat: "+req.Nama)
+
 	go helpers.RevalidatePath("/pemerintahan")
 
 	database.DB.Preload("Jabatan").Preload("Foto").Preload("Pendidikan").First(&pejabat, pejabat.ID)
@@ -334,6 +349,8 @@ func UpdatePejabat(c *gin.Context) {
 		}
 	}
 
+	helpers.Log(c, "update", "pemerintahan", "Memperbarui pejabat: "+req.Nama)
+
 	go helpers.RevalidatePath("/pemerintahan")
 
 	database.DB.Preload("Jabatan").Preload("Foto").Preload("Pendidikan").First(&pejabat, pejabat.ID)
@@ -354,6 +371,8 @@ func DeletePejabat(c *gin.Context) {
 	}
 
 	database.DB.Model(&pejabat).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "pemerintahan", "Menghapus pejabat: "+pejabat.Nama)
 
 	go helpers.RevalidatePath("/pemerintahan")
 
@@ -384,6 +403,9 @@ func ForceDeletePejabat(c *gin.Context) {
 	}
 
 	database.DB.Delete(&pejabat)
+
+	helpers.Log(c, "force_delete", "pemerintahan", "Menghapus permanen pejabat: "+pejabat.Nama)
+
 	helpers.OK(c, "Pejabat berhasil dihapus permanen", nil)
 }
 
@@ -401,6 +423,9 @@ func RestorePejabat(c *gin.Context) {
 	}
 
 	database.DB.Model(&pejabat).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "pemerintahan", "Memulihkan pejabat: "+pejabat.Nama)
+
 	helpers.OK(c, "Pejabat berhasil dipulihkan", nil)
 }
 
@@ -470,6 +495,8 @@ func CreateLembaga(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "pemerintahan", "Menambah lembaga: "+req.Nama)
+
 	go helpers.RevalidatePath("/pemerintahan")
 
 	database.DB.Preload("Logo").First(&lembaga, lembaga.ID)
@@ -508,6 +535,8 @@ func UpdateLembaga(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "pemerintahan", "Memperbarui lembaga: "+req.Nama)
+
 	go helpers.RevalidatePath("/pemerintahan")
 
 	database.DB.Preload("Logo").First(&lembaga, lembaga.ID)
@@ -528,6 +557,8 @@ func DeleteLembaga(c *gin.Context) {
 	}
 
 	database.DB.Model(&lembaga).Update("is_deleted", true)
+
+	helpers.Log(c, "delete", "pemerintahan", "Menghapus lembaga: "+lembaga.Nama)
 
 	go helpers.RevalidatePath("/pemerintahan")
 
@@ -556,6 +587,9 @@ func ForceDeleteLembaga(c *gin.Context) {
 	}
 
 	database.DB.Delete(&lembaga)
+
+	helpers.Log(c, "force_delete", "pemerintahan", "Menghapus permanen lembaga: "+lembaga.Nama)
+
 	helpers.OK(c, "Lembaga berhasil dihapus permanen", nil)
 }
 
@@ -573,5 +607,8 @@ func RestoreLembaga(c *gin.Context) {
 	}
 
 	database.DB.Model(&lembaga).Update("is_deleted", false)
+
+	helpers.Log(c, "restore", "pemerintahan", "Memulihkan lembaga: "+lembaga.Nama)
+
 	helpers.OK(c, "Lembaga berhasil dipulihkan", nil)
 }

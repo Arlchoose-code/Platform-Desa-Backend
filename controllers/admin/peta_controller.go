@@ -76,6 +76,8 @@ func CreatePetaFasilitas(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "create", "peta", "Menambah fasilitas peta: "+req.Nama)
+
 	if req.IsPublished {
 		go helpers.RevalidatePath("/peta")
 	}
@@ -117,6 +119,8 @@ func UpdatePetaFasilitas(c *gin.Context) {
 		return
 	}
 
+	helpers.Log(c, "update", "peta", "Memperbarui fasilitas peta: "+req.Nama)
+
 	go helpers.RevalidatePath("/peta")
 
 	database.DB.Preload("Foto").First(&data, data.ID)
@@ -146,6 +150,8 @@ func DeletePetaFasilitas(c *gin.Context) {
 
 	database.DB.Delete(&data)
 
+	helpers.Log(c, "delete", "peta", "Menghapus fasilitas peta: "+data.Nama)
+
 	go helpers.RevalidatePath("/peta")
 
 	helpers.OK(c, "Fasilitas berhasil dihapus", nil)
@@ -173,5 +179,8 @@ func PublishPetaFasilitas(c *gin.Context) {
 	if !newStatus {
 		msg = "Fasilitas berhasil disembunyikan"
 	}
+
+	helpers.Log(c, "publish", "peta", msg+": "+data.Nama)
+
 	helpers.OK(c, msg, gin.H{"is_published": newStatus})
 }
