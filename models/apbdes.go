@@ -20,15 +20,23 @@ type APBDes struct {
 	Detail          []APBDesDetail `gorm:"foreignKey:APBDesID" json:"detail,omitempty"`
 }
 
+func (APBDes) TableName() string {
+	return "apbdes"
+}
+
 type APBDesDetail struct {
 	ID        uint   `gorm:"primarykey" json:"id"`
-	APBDesID  uint   `gorm:"not null" json:"apbdes_id"`
+	APBDesID  uint   `gorm:"column:apbdes_id;not null" json:"apbdes_id"`
 	Jenis     string `gorm:"size:20;not null" json:"jenis"`
 	Kategori  string `gorm:"size:100;not null" json:"kategori"`
 	Uraian    string `gorm:"size:255;not null" json:"uraian"`
 	Anggaran  int64  `gorm:"default:0" json:"anggaran"`
 	Realisasi int64  `gorm:"default:0" json:"realisasi"`
 	Urutan    uint   `gorm:"default:0" json:"urutan"`
+}
+
+func (APBDesDetail) TableName() string {
+	return "apbdes_details"
 }
 
 type Pengaduan struct {
