@@ -127,13 +127,18 @@ func CreatePotensi(c *gin.Context) {
 		return
 	}
 
+	isPublished := false
+	if req.IsPublished != nil {
+		isPublished = *req.IsPublished
+	}
+
 	potensi := models.PotensiDesa{
 		Kategori:    req.Kategori,
 		Judul:       req.Judul,
 		Deskripsi:   req.Deskripsi,
 		FotoID:      req.FotoID,
 		Urutan:      req.Urutan,
-		IsPublished: req.IsPublished,
+		IsPublished: isPublished,
 	}
 
 	if err := database.DB.Create(&potensi).Error; err != nil {
@@ -168,14 +173,19 @@ func UpdatePotensi(c *gin.Context) {
 		return
 	}
 
-	potensi.Kategori = req.Kategori
-	potensi.Judul = req.Judul
-	potensi.Deskripsi = req.Deskripsi
-	potensi.FotoID = req.FotoID
-	potensi.Urutan = req.Urutan
-	potensi.IsPublished = req.IsPublished
+	updateIsPublished := potensi.IsPublished
+	if req.IsPublished != nil {
+		updateIsPublished = *req.IsPublished
+	}
 
-	if err := database.DB.Save(&potensi).Error; err != nil {
+	if err := database.DB.Model(&potensi).Updates(map[string]interface{}{
+		"kategori":     req.Kategori,
+		"judul":        req.Judul,
+		"deskripsi":    req.Deskripsi,
+		"foto_id":      req.FotoID,
+		"urutan":       req.Urutan,
+		"is_published": updateIsPublished,
+	}).Error; err != nil {
 		helpers.InternalError(c, "Gagal memperbarui potensi desa")
 		return
 	}

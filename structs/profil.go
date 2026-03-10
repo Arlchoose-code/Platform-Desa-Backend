@@ -42,5 +42,5 @@ type PotensiDesaRequest struct {
 	Deskripsi   *string `json:"deskripsi"`
 	FotoID      *uint   `json:"foto_id"`
 	Urutan      uint    `json:"urutan"`
-	IsPublished bool    `json:"is_published"`
+	IsPublished *bool   `json:"is_published"`
 }
